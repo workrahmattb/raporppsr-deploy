@@ -1,1 +1,13 @@
-node_modules
+# Laravel
+.env
+/vendor
+/node_modules
+/storage/framework
+/storage/logs
+/public/hot
+/public/build
+/bootstrap/cache
+*.log
+
+# Submodule
+raporppsrnew2026/

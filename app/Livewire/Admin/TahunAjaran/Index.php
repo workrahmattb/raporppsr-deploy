@@ -11,51 +11,43 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $search = '';
     public $confirmingDeletion = false;
     public $tahunAjaranToDelete = null;
-
-    protected $queryString = ['search'];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
 
     public function toggleActive($id)
     {
         $tahunAjaran = TahunAjaran::findOrFail($id);
-        
+
         if (!$tahunAjaran->is_active) {
             // Deactivate all other tahun ajaran
             TahunAjaran::where('sekolah_id', auth()->user()->sekolah_id)
                 ->update(['is_active' => false]);
-            
+
             // Deactivate all semesters
             Semester::whereHas('tahunAjaran', function($q) {
                 $q->where('sekolah_id', auth()->user()->sekolah_id);
             })->update(['is_active' => false]);
         }
-        
+
         $tahunAjaran->is_active = !$tahunAjaran->is_active;
         $tahunAjaran->save();
-        
+
         session()->flash('message', 'Status tahun ajaran berhasil diubah.');
     }
 
     public function toggleSemester($semesterId)
     {
         $semester = Semester::findOrFail($semesterId);
-        
+
         if (!$semester->is_active) {
             // Deactivate all other semesters in the same tahun ajaran
             Semester::where('tahun_ajaran_id', $semester->tahun_ajaran_id)
                 ->update(['is_active' => false]);
         }
-        
+
         $semester->is_active = !$semester->is_active;
         $semester->save();
-        
+
         session()->flash('message', 'Status semester berhasil diubah.');
     }
 
@@ -69,19 +61,16 @@ class Index extends Component
     {
         $tahunAjaran = TahunAjaran::findOrFail($this->tahunAjaranToDelete);
         $tahunAjaran->delete();
-        
+
         $this->confirmingDeletion = false;
         $this->tahunAjaranToDelete = null;
-        
+
         session()->flash('message', 'Tahun ajaran berhasil dihapus.');
     }
 
     public function render()
     {
         $tahunAjarans = TahunAjaran::where('sekolah_id', auth()->user()->sekolah_id)
-            ->when($this->search, function($query) {
-                $query->where('tahun', 'like', '%' . $this->search . '%');
-            })
             ->orderBy('tahun', 'desc')
             ->paginate(10);
 
