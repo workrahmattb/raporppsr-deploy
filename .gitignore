@@ -2,12 +2,27 @@
 .env
 /vendor
 /node_modules
-/storage/framework
-/storage/logs
+
+# Storage (jangan hapus foldernya, hanya isinya)
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+
+# Cache Laravel
+bootstrap/cache/*.php
+
+# Vite (PENTING!)
 /public/hot
-/public/build
-/bootstrap/cache
+# /public/build   <-- JANGAN DIIGNORE kalau kamu pakai Vite
+
+# Logs
 *.log
 
-# Submodule
-raporppsrnew2026/
+# OS
+.DS_Store
+Thumbs.db
+
+# Optional
+npm-debug.log
+yarn-error.log
