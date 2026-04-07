@@ -53,7 +53,7 @@ class Create extends Component
         ]);
 
         session()->flash('message', 'Penugasan guru berhasil ditambahkan.');
-        return redirect()->route('admin.penugasan-guru.index');
+        $this->redirectRoute('admin.penugasan-guru.index', navigate: true);
     }
 
     public function render()

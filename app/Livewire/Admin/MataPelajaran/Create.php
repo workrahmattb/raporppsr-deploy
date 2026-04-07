@@ -51,7 +51,7 @@ class Create extends Component
         ]));
 
         session()->flash('message', 'Mata pelajaran berhasil ditambahkan.');
-        return redirect()->route('admin.mata-pelajaran.index');
+        $this->redirectRoute('admin.mata-pelajaran.index', navigate: true);
     }
 
     public function render()
