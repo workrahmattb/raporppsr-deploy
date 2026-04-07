@@ -14,17 +14,26 @@ class Create extends Component
     public $tingkat = '';
     public $kkm = 75;
 
-    protected $rules = [
-        'kode' => 'required|string|max:10',
-        'nama' => 'required|string|max:255',
-        'namapelajaran_arabic' => 'nullable|string|max:255',
-        'kelompok' => 'required|in:A,B,C',
-        'tingkat' => 'nullable|in:7,8,9,10,11,12',
-        'kkm' => 'required|integer|min:0|max:100',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'kode' => [
+                'required',
+                'string',
+                'max:10',
+                'unique:mata_pelajaran,kode,NULL,id,sekolah_id,' . auth()->user()->sekolah_id,
+            ],
+            'nama' => 'required|string|max:255',
+            'namapelajaran_arabic' => 'nullable|string|max:255',
+            'kelompok' => 'required|in:A,B,C',
+            'tingkat' => 'nullable|in:7,8,9,10,11,12',
+            'kkm' => 'required|integer|min:0|max:100',
+        ];
+    }
 
     protected $messages = [
         'kode.required' => 'Kode mata pelajaran harus diisi',
+        'kode.unique' => 'Kode mata pelajaran sudah digunakan, tidak bisa menyimpan kode yang sama',
         'nama.required' => 'Nama mata pelajaran harus diisi',
         'kelompok.required' => 'Kelompok harus dipilih',
         'kkm.required' => 'KKM harus diisi',
