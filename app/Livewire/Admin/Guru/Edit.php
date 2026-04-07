@@ -136,7 +136,7 @@ class Edit extends Component
         }
 
         session()->flash('message', 'Guru berhasil diperbarui.');
-        return redirect()->route('admin.guru.index');
+        $this->redirectRoute('admin.guru.index', navigate: true);
     }
 
     public function render()

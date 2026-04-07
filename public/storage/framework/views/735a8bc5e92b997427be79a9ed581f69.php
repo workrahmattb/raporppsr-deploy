@@ -89,7 +89,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="<?php echo e(route('admin.guru.edit', $guru->id)); ?>" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <a href="<?php echo e(route('admin.guru.edit', $guru->id)); ?>" wire:navigate class="text-blue-600 hover:text-blue-900 mr-3">
                                 Edit
                             </a>
                             <button wire:click="confirmDelete(<?php echo e($guru->id); ?>)" class="text-red-600 hover:text-red-900">
