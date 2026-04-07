@@ -115,7 +115,7 @@ class Edit extends Component
         ]);
 
         session()->flash('message', 'Siswa berhasil diperbarui.');
-        return redirect()->route('admin.siswa.index');
+        $this->redirectRoute('admin.siswa.index', navigate: true);
     }
 
     public function render()

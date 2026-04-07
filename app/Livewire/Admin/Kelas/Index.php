@@ -55,8 +55,14 @@ class Index extends Component
                 $q->where('sekolah_id', auth()->user()->sekolah_id);
             })
             ->when($this->search, function($query) {
-                $query->where(function($q) {
-                    $q->where('nama', 'like', '%' . $this->search . '%');
+                $search = '%' . $this->search . '%';
+                $query->where(function($q) use ($search) {
+                    $q->where('nama', 'like', $search)
+                      ->orWhere('tingkat', 'like', $search)
+                      ->orWhereHas('siswas', function($sq) use ($search) {
+                          $sq->where('nama', 'like', $search)
+                            ->orWhere('nisn', 'like', $search);
+                      });
                 });
             })
             ->when($this->tahun_ajaran_filter, function($query) {
