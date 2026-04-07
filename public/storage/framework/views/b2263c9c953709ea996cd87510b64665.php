@@ -156,7 +156,7 @@
                             <div class="text-sm text-gray-900"><?php echo e($mataPelajaran->kkm); ?></div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="<?php echo e(route('admin.mata-pelajaran.edit', $mataPelajaran->id)); ?>" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <a href="<?php echo e(route('admin.mata-pelajaran.edit', $mataPelajaran->id)); ?>" wire:navigate class="text-blue-600 hover:text-blue-900 mr-3">
                                 Edit
                             </a>
                             <button wire:click="confirmDelete(<?php echo e($mataPelajaran->id); ?>)" class="text-red-600 hover:text-red-900">

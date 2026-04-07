@@ -61,7 +61,7 @@ class Edit extends Component
         ]);
 
         session()->flash('message', 'Mata pelajaran berhasil diperbarui.');
-        return redirect()->route('admin.mata-pelajaran.index');
+        $this->redirectRoute('admin.mata-pelajaran.index', navigate: true);
     }
 
     public function render()
