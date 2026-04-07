@@ -13,8 +13,21 @@ class Index extends Component
     use WithPagination;
 
     public $search = '';
+    public $tingkat = '';
     public $assignmentToDelete = null;
     public $showDeleteModal = false;
+
+    protected $queryString = ['search', 'tingkat'];
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTingkat()
+    {
+        $this->resetPage();
+    }
 
     public function deleteAssignment()
     {
@@ -54,8 +67,10 @@ class Index extends Component
                       ->orWhere('mata_pelajarans.nama', 'like', '%' . $this->search . '%');
                 });
             })
+            ->when($this->tingkat, function($query) {
+                $query->where('guru_mata_pelajaran.tingkat', $this->tingkat);
+            })
             ->orderBy('gurus_rapor.nama')
-            ->orderBy('guru_mata_pelajaran.tingkat')
             ->paginate(15);
 
         $tahunAjaran = TahunAjaran::where('sekolah_id', auth()->user()->sekolah_id)
