@@ -21,7 +21,6 @@ class Create extends Component
                 'required',
                 'string',
                 'max:10',
-                'unique:mata_pelajarans,kode,NULL,id,sekolah_id,' . auth()->user()->sekolah_id,
             ],
             'nama' => 'required|string|max:255',
             'namapelajaran_arabic' => 'nullable|string|max:255',
@@ -33,7 +32,6 @@ class Create extends Component
 
     protected $messages = [
         'kode.required' => 'Kode mata pelajaran harus diisi',
-        'kode.unique' => 'Kode mata pelajaran sudah digunakan, tidak bisa menyimpan kode yang sama',
         'nama.required' => 'Nama mata pelajaran harus diisi',
         'kelompok.required' => 'Kelompok harus dipilih',
         'kkm.required' => 'KKM harus diisi',
@@ -43,17 +41,21 @@ class Create extends Component
 
     public function save()
     {
-        $this->validate();
+        // Cek duplikasi kode manual via Eloquent
+        $existing = MataPelajaran::where('kode', $this->kode)
+            ->where('sekolah_id', auth()->user()->sekolah_id)
+            ->first();
 
-        MataPelajaran::create([
+        if ($existing) {
+            $this->addError('kode', 'Kode mata pelajaran sudah digunakan, tidak bisa menyimpan kode yang sama');
+            return;
+        }
+
+        $validated = $this->validate();
+
+        MataPelajaran::create(array_merge($validated, [
             'sekolah_id' => auth()->user()->sekolah_id,
-            'kode' => $this->kode,
-            'nama' => $this->nama,
-            'namapelajaran_arabic' => $this->namapelajaran_arabic,
-            'kelompok' => $this->kelompok,
-            'tingkat' => $this->tingkat,
-            'kkm' => $this->kkm,
-        ]);
+        ]));
 
         session()->flash('message', 'Mata pelajaran berhasil ditambahkan.');
         return redirect()->route('admin.mata-pelajaran.index');
