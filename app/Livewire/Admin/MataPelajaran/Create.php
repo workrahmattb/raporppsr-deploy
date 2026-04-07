@@ -21,7 +21,7 @@ class Create extends Component
                 'required',
                 'string',
                 'max:10',
-                'unique:mata_pelajaran,kode,NULL,id,sekolah_id,' . auth()->user()->sekolah_id,
+                'unique:mata_pelajarans,kode,NULL,id,sekolah_id,' . auth()->user()->sekolah_id,
             ],
             'nama' => 'required|string|max:255',
             'namapelajaran_arabic' => 'nullable|string|max:255',
