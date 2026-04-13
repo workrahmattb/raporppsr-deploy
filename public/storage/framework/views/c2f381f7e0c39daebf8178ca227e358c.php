@@ -230,7 +230,6 @@
         .sign-name {
             font-weight: bold;
             font-size: 13pt;
-            text-decoration: underline;
             color: #000;
         }
 
