@@ -78,7 +78,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="{{ route('admin.tahun-ajaran.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <a href="{{ route('admin.tahun-ajaran.index') }}" wire:navigate class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>

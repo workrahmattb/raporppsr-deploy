@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="mb-6">
         <div class="flex items-center mb-4">
-            <a href="<?php echo e(route('admin.kelas.index')); ?>" class="text-gray-600 hover:text-gray-900 mr-4">
+            <a href="<?php echo e(route('admin.kelas.index')); ?>" wire:navigate class="text-gray-600 hover:text-gray-900 mr-4">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -150,7 +150,7 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
 
             <!-- Actions -->
             <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
-                <a href="<?php echo e(route('admin.kelas.index')); ?>" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition">
+                <a href="<?php echo e(route('admin.kelas.index')); ?>" wire:navigate class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition">
                     Batal
                 </a>
                 <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
