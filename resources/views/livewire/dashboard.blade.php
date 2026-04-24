@@ -85,13 +85,13 @@
                     <span class="font-medium text-gray-700">Kelola Tahun Ajaran</span>
                 </a>
                 {{-- Temporarily disabled
-                <a href="{{ route('admin.siswa.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <a href="{{ route('admin.siswa.index') }}" wire:navigate class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <svg class="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     <span class="font-medium text-gray-700">Kelola Siswa</span>
                 </a>
-                <a href="{{ route('admin.kelas.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <a href="{{ route('admin.kelas.index') }}" wire:navigate class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <svg class="w-6 h-6 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                     </svg>
@@ -159,13 +159,13 @@
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h3>
             {{-- Temporarily disabled until components are created
             <div class="flex gap-4">
-                <a href="{{ route('wali-kelas.rekap-nilai.index') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                <a href="{{ route('wali-kelas.rekap-nilai.index') }}" wire:navigate class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     Rekap Nilai
                 </a>
-                <a href="{{ route('wali-kelas.rapor.index') }}" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition">
+                <a href="{{ route('wali-kelas.rapor.index') }}" wire:navigate class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
