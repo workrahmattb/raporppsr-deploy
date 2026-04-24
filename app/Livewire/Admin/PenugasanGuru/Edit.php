@@ -19,14 +19,14 @@ class Edit extends Component
     protected $rules = [
         'guru_id'          => 'required|exists:gurus_rapor,id',
         'mata_pelajaran_id'=> 'required|exists:mata_pelajarans,id',
-        'tingkat'          => 'required|in:VII,VIII,IX',
+        'tingkat'          => 'required|in:VII,VIII,IX,X,XI,XII',
     ];
 
     protected $messages = [
         'guru_id.required'           => 'Guru harus dipilih',
         'mata_pelajaran_id.required' => 'Mata pelajaran harus dipilih',
         'tingkat.required'           => 'Tingkat harus dipilih',
-        'tingkat.in'                 => 'Pilih tingkat yang valid (VII, VIII, atau IX)',
+        'tingkat.in'                 => 'Pilih tingkat yang valid (VII, VIII, IX, X, XI, atau XII)',
     ];
 
     public function mount($id)
@@ -84,7 +84,7 @@ class Edit extends Component
             ->orderBy('nama')
             ->get();
 
-        $tingkats = ['VII' => 'VII', 'VIII' => 'VIII', 'IX' => 'IX'];
+        $tingkats = ['VII' => 'VII', 'VIII' => 'VIII', 'IX' => 'IX', 'X' => 'X', 'XI' => 'XI', 'XII' => 'XII'];
 
         $tahunAjaran = TahunAjaran::where('sekolah_id', auth()->user()->sekolah_id)
             ->where('is_active', true)
