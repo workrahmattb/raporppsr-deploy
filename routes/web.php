@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', \App\Livewire\WaliKelas\Rapor\Index::class)->name('index');
             Route::get('/{siswaId}/preview', \App\Livewire\WaliKelas\Rapor\Preview::class)->name('preview');
             Route::get('/{siswaId}/print', [\App\Livewire\WaliKelas\Rapor\Preview::class, 'print'])->name('print');
+            Route::get('/print-all-class', [\App\Livewire\WaliKelas\Rapor\Index::class, 'printAllByClass'])->name('print-all-class');
         });
         
         // Leger Kelas

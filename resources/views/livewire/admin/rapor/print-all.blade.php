@@ -64,37 +64,44 @@
         /* Identity Section */
         .identity-box {
             background-color: #fff;
-            border: 1px solid #000;
-            border-radius: 8px;
+            border: 3px double #000;
+            border-radius: 0px;
             padding: 15px;
             margin-bottom: 25px;
         }
 
         .identity-table {
             width: 100%;
+            border: none;
+            border-collapse: collapse;
+            cellspacing: 0;
         }
 
         .identity-table td {
-            padding: 4px;
+            padding: 2px 4px;
             vertical-align: top;
+            border: none;
         }
 
         .label {
             font-weight: bold;
             color: #000;
-            width: 150px;
+            width: 130px;
             font-family: DejaVu Sans; 
             direction: rtl;
+            text-align: right;
         }
 
         .separator {
-            width: 10px;
+            width: 2px;
             text-align: center;
+            padding: 0;
         }
 
         .value {
             font-weight: 500;
             color: #000;
+            text-align: right;
         }
 
         /* Section Titles */
@@ -215,10 +222,12 @@
 
 @php
     // Function to convert Latin numerals to Eastern Arabic numerals
-    function toArabicNumerals($number) {
-        $latinNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        $arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-        return str_replace($latinNumerals, $arabicNumerals, $number);
+    if (!function_exists('toArabicNumerals')) {
+        function toArabicNumerals($number) {
+            $latinNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            $arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return str_replace($latinNumerals, $arabicNumerals, $number);
+        }
     }
 @endphp
 
@@ -250,25 +259,30 @@
     <div class="identity-box">
         <table class="identity-table">
             <tr>
+                <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">{{ strtoupper($siswa->nama_arabic) }}</td>
+                <td class="separator">:</td>
                 <td class="label">اسم الطالب / الطالبة</td>
-                <td class="separator">:</td>
-                <td style="font-size:12px; font-family: DejaVu Sans;" width="40%">{{ strtoupper($siswa->nama_arabic) }}</td>
-                <td class="label">العام الدراسي</td>
-                <td class="separator">:</td>
-                <td style="font-size:12px; font-family: DejaVu Sans;">
+                <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">
                     @php
+                        if (!function_exists('toArabicNumerals')) {
+                            function toArabicNumerals($number) {
+                                $latinNumerals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                                $arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+                                return str_replace($latinNumerals, $arabicNumerals, $number);
+                            }
+                        }
                         $tahunAjaran = $semester->tahunAjaran->tahun ?? '-';
                     @endphp
                     {{ toArabicNumerals($tahunAjaran) }}
                 </td>
+                <td class="separator">:</td>
+                <td class="label">العام الدراسي</td>
             </tr>
             <tr>
+                <td class="value" style="text-align: right;">{{ $kelas->nama ?? '-' }}</td>
+                <td class="separator">:</td>
                 <td class="label">الفصل</td>
-                <td class="separator">:</td>
-                <td class="value">{{ $kelas->nama ?? '-' }}</td>
-                <td class="label">الفصل الدراسي</td>
-                <td class="separator">:</td>
-                <td class="value">
+                <td class="value" style="text-align: right;">
                     @php
                         $semesterNama = $semester->nama ?? '';
                         $semesterArabic = '-';
@@ -281,6 +295,8 @@
                     @endphp
                     {{ $semesterArabic }}
                 </td>
+                <td class="separator">:</td>
+                <td class="label">الفصل الدراسي</td>
             </tr>
         </table>
     </div>
@@ -388,7 +404,7 @@
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-name">(....................................)</div>
+                <div class="sign-name"></div>
             </td>
             <td class="sign-col">
                 <div class="sign-role">ولية الفصل</div>
@@ -397,7 +413,7 @@
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-name">
-                    {{ $kelas->waliKelas->nama_arabic ?? $kelas->waliKelas->nama ?? '(....................................)' }}
+                    {{ $kelas->waliKelas->nama_arabic ?? $kelas->waliKelas->nama ?? '' }}
                 </div>
             </td>
             <td class="sign-col">

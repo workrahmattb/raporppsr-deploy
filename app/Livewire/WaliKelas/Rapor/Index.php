@@ -86,6 +86,85 @@ class Index extends Component
         $this->dispatch('saved-catatan');
     }
 
+    public function printAllByClass()
+    {
+        // Get semesterId from query string
+        $semesterId = request()->query('semesterId');
+        
+        // Load kelas if not already loaded
+        $kelas = KelasRapor::whereHas('waliKelas', function($query) {
+            $query->where('user_id', auth()->id());
+        })->with('tahunAjaran')->first();
+        
+        if (!$kelas || !$semesterId) {
+            abort(400, 'Pilih kelas dan semester terlebih dahulu');
+        }
+
+        // Verify this user is indeed the wali kelas for this class
+        $guru = \App\Models\GuruRapor::where('user_id', auth()->id())->first();
+        if (!$guru || $kelas->wali_kelas_id != $guru->id) {
+            abort(403, 'Anda bukan wali kelas kelas ini');
+        }
+
+        // Get all students in the selected class
+        $siswas = \DB::table('kelas_siswa')
+            ->join('siswas_rapor', 'kelas_siswa.siswa_id', '=', 'siswas_rapor.id')
+            ->where('kelas_siswa.kelas_id', $kelas->id)
+            ->orderBy('kelas_siswa.nomor_absen')
+            ->get();
+
+        if ($siswas->isEmpty()) {
+            abort(404, 'Tidak ada siswa di kelas ini');
+        }
+
+        $semester = Semester::with('tahunAjaran')->find($semesterId);
+        $settings = \App\Models\RaporSetting::getSettings();
+
+        // Prepare data for all students
+        $allRaporData = [];
+        foreach ($siswas as $siswa) {
+            $nilais = \App\Models\Nilai::where('siswa_id', $siswa->id)
+                ->where('semester_id', $semesterId)
+                ->with('mataPelajaran')
+                ->get();
+
+            $nilaiSikap = \App\Models\NilaiSikap::where('siswa_id', $siswa->id)
+                ->where('semester_id', $semesterId)
+                ->first();
+
+            $kehadiran = \App\Models\Kehadiran::where('siswa_id', $siswa->id)
+                ->where('semester_id', $semesterId)
+                ->first();
+
+            $catatan = \App\Models\CatatanWaliKelas::where('siswa_id', $siswa->id)
+                ->where('semester_id', $semesterId)
+                ->first();
+
+            $allRaporData[] = [
+                'siswa' => $siswa,
+                'nilais' => $nilais,
+                'nilaiSikap' => $nilaiSikap,
+                'kehadiran' => $kehadiran,
+                'catatan' => $catatan,
+            ];
+        }
+
+        // Generate PDF with all students - use admin's print-all view
+        $pdf = \Mccarlosen\LaravelMpdf\Facades\LaravelMpdf::loadView('livewire.admin.rapor.print-all', [
+            'allRaporData' => $allRaporData,
+            'kelas' => $kelas,
+            'semester' => $semester,
+            'settings' => $settings,
+        ], [], [
+            'format' => [215, 330], // F4 size
+            'orientation' => 'P',
+        ]);
+
+        return response()->streamDownload(function() use ($pdf) {
+            echo $pdf->output();
+        }, 'rapor-' . $kelas->nama . '-' . $semester->nama . '.pdf');
+    }
+
     public function render()
     {
         $semesters = Semester::orderBy('tahun_ajaran_id', 'desc')->orderBy('nama')->get();

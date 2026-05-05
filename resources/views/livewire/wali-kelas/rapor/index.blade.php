@@ -21,13 +21,28 @@
 
         <!-- Semester Filter -->
         <div class="mb-6 bg-white rounded-lg shadow-md p-4">
-            <label for="semester" class="block text-sm font-medium text-gray-700 mb-2">Pilih Semester</label>
-            <select wire:model.live="semesterId" id="semester" class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">-- Pilih Semester --</option>
-                @foreach($semesters as $sem)
-                    <option value="{{ $sem->id }}">{{ $sem->nama_lengkap }}</option>
-                @endforeach
-            </select>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex-1">
+                    <label for="semester" class="block text-sm font-medium text-gray-700 mb-2">Pilih Semester</label>
+                    <select wire:model.live="semesterId" id="semester" class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">-- Pilih Semester --</option>
+                        @foreach($semesters as $sem)
+                            <option value="{{ $sem->id }}">{{ $sem->nama_lengkap }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @if($semesterId && count($siswas) > 0)
+                    <div class="flex items-end">
+                        <a href="{{ route('wali-kelas.rapor.print-all-class', ['semesterId' => $semesterId]) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-[#006025] text-white rounded-lg hover:bg-[#004d1c] transition">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                            Cetak Semua
+                        </a>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- Students Table -->
