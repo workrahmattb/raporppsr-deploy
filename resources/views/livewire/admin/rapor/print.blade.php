@@ -46,7 +46,7 @@
         }
         
         .header-subtitle {
-            font-size: 20pt;
+            font-size: 25pt;
             font-weight: 600;
             margin: 5px 0;
             color: #030303ff; /* Yellow/Gold Accent */
@@ -262,8 +262,8 @@
             </td>
             <td width="85%" align="center">
                 <div class="header-text">
-                    <h1 class="header-title">لطلبة معهد شفاعة الرسول الاسلامي</h1>
-                    <h2 class="header-subtitle">كشف الدرجات</h2>
+                    <h1 class="header-title">كشف الدرجات</h1>
+                    <h2 class="header-subtitle">لطلبة معهد شفاعة الرسول الإسلامي</h2>
                     <!-- <p class="header-address">Teluk Kuantan, Kabupaten Kuantan Singingi, Riau</p>
                     <p class="header-address">Website: www.syafaaturrasul.com | Email: info@syafaaturrasul.com</p> -->
                 </div>
@@ -275,9 +275,6 @@
     <div class="identity-box">
         <table class="identity-table">
             <tr>
-                <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">{{ strtoupper($siswa->nama_arabic) }}</td>
-                <td class="separator">:</td>
-                <td class="label">اسم الطالب / الطالبة</td>
                 <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">
                     @php
                         if (!function_exists('toArabicNumerals')) {
@@ -293,11 +290,11 @@
                 </td>
                 <td class="separator">:</td>
                 <td class="label">العام الدراسي</td>
+                <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">{{ strtoupper($siswa->nama_arabic) }}</td>
+                <td class="separator">:</td>
+                <td class="label">اسم الطالب / الطالبة</td>
             </tr>
             <tr>
-                <td class="value" style="text-align: right;">{{ $kelas->nama ?? '-' }}</td>
-                <td class="separator">:</td>
-                <td class="label">الفصل</td>
                 <td class="value" style="text-align: right;">
                     @php
                         $semesterNama = $semester->nama ?? '';
@@ -312,7 +309,10 @@
                     {{ $semesterArabic }}
                 </td>
                 <td class="separator">:</td>
-                <td class="label">الفصل الدراسي</td>
+                <td class="label">الدور</td>
+                <td class="value" style="text-align: right;">{{ $kelas->nama ?? '-' }}</td>
+                <td class="separator">:</td>
+                <td class="label">الفصل</td>
             </tr>
         </table>
     </div>
@@ -464,24 +464,6 @@
     <table class="footer-table">
         <tr>
             <td class="sign-col">
-                <div class="sign-role">ولي الامر</div>  
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-name"></div>
-            </td>
-            <td class="sign-col">
-                <div class="sign-role">ولية الفصل</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-spacer">&nbsp;</div>
-                <div class="sign-name">
-                    {{ $kelas->waliKelas->nama_arabic ?? $kelas->waliKelas->nama ?? '' }}
-                </div>
-            </td>
-            <td class="sign-col">
                 <div class="sign-role">رئيسة المدرسة</div>
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
@@ -496,6 +478,24 @@
                     }
                 @endphp
                 <div class="sign-name">{{ $kepalaMadrasah }}</div>
+            </td>
+            <td class="sign-col">
+                <div class="sign-role">ولية الفصل</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-name">
+                    {{ $kelas->waliKelas->nama_arabic ?? $kelas->waliKelas->nama ?? '' }}
+                </div>
+            </td>
+            <td class="sign-col">
+                <div class="sign-role">ولي الامر</div>  
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-spacer">&nbsp;</div>
+                <div class="sign-name"></div>
             </td>
         </tr>
     </table>

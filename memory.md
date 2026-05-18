@@ -87,3 +87,117 @@
 | Total Link Diperbaiki | 20+ |
 
 **Semua navigasi sekarang menggunakan SPA behavior Livewire (tanpa full page reload)**
+
+---
+
+## Tanggal
+5 Mei 2026
+
+---
+
+## 1. Perbaikan Identity Section - Border & Alignment
+
+### Files Edited:
+- `resources/views/livewire/admin/rapor/print.blade.php`
+- `resources/views/livewire/admin/rapor/print-all.blade.php`
+- `resources/views/livewire/wali-kelas/rapor/print.blade.php`
+
+### Perubahan:
+- Menambahkan double border (`3px double #000`) pada `.identity-box`
+- Menambahkan `border-collapse: collapse` pada `.identity-table`
+- Menghapus border dalam cell (`border: none`)
+- Menambahkan `text-align: right` pada nama siswa Arabic, tahun ajaran, kelas, semester
+- Memperbaiki padding dan width separator agar lebih dekat
+
+---
+
+## 2. Fix Function Redeclaration Error
+
+### Masalah:
+Error `Cannot redeclare function toArabicNumerals()` saat cetak rapor semua siswa (print-all-class).
+
+### Files Edited:
+- `resources/views/livewire/admin/rapor/print.blade.php`
+- `resources/views/livewire/admin/rapor/print-all.blade.php`
+- `resources/views/livewire/wali-kelas/rapor/print.blade.php`
+
+### Solusi:
+Menambahkan `function_exists()` check sebelum mendeklarasikan fungsi:
+```php
+if (!function_exists('toArabicNumerals')) {
+    function toArabicNumerals($number) { ... }
+}
+```
+
+---
+
+## 3. Menghapus Tanda Kurung di Nama Wali Kelas
+
+### Files Edited:
+- `resources/views/livewire/admin/rapor/print.blade.php`
+- `resources/views/livewire/admin/rapor/print-all.blade.php`
+- `resources/views/livewire/wali-kelas/rapor/print.blade.php`
+
+### Perubahan:
+- Menghapus `(....................................)` di area tanda tangan
+- Menggunakan string kosong jika nama kosong
+
+---
+
+## 4. Menambahkan Fitur Cetak Semua Siswa untuk Wali Kelas
+
+### Files Created/Edited:
+
+#### a. Controller
+- `app/Livewire/WaliKelas/Rapor/Index.php`
+  - Method baru: `printAllByClass()`
+  - Load kelas langsung dari database (tidak menggunakan $this->kelas)
+  - Validasi semester dari query string
+  - Verifikasi user adalah wali kelas yang benar
+
+#### b. Route
+- `routes/web.php` (line 117)
+  ```php
+  Route::get('/print-all-class', [\App\Livewire\WaliKelas\Rapor\Index::class, 'printAllByClass'])->name('print-all-class');
+  ```
+
+#### c. View
+- `resources/views/livewire/wali-kelas/rapor/index.blade.php`
+  - Button "Cetak Semua" muncul setelah pilih semester
+  - Link ke route `wali-kelas.rapor.print-all-class` dengan parameter semesterId
+
+---
+
+## 5. Sinkronisasi UI Admin & Wali Kelas
+
+### Files Disinkronkan:
+- `print.blade.php` (admin)
+- `print.blade.php` (wali-kelas)
+- `print-all.blade.php` (admin)
+
+### Hasil:
+- Ketiga file sekarang memiliki UI yang konsisten
+- Menghapus comment yang tidak diperlukan
+- Menyatukan format signature/tanda tangan
+
+---
+
+## Ringkasan
+
+| Kategori | Jumlah File |
+|----------|-------------|
+| PHP Files | 4 |
+| Blade Files | 3 |
+| Routes | 1 |
+
+| Fitur | Status |
+|-------|--------|
+| Border identity section | ✅ Selesai |
+| Alignment Arabic text | ✅ Selesai |
+| Hapus tanda kurung nama | ✅ Selesai |
+| Fix function error | ✅ Selesai |
+| Print all (Admin) | ✅ Selesai |
+| Print all (Wali Kelas) | ✅ Selesai |
+| Sinkronisasi UI | ✅ Selesai |
+
+**Semua perbaikan telah diuji dan berjalan dengan baik**
