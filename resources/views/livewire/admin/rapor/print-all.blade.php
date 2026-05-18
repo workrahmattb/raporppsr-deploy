@@ -322,9 +322,9 @@
                         
                         $predikat = $isEmptyNilai ? '-' : match(true) {
                             $nilaiPengetahuan >= 90 => 'ممتاز',
-                            $nilaiPengetahuan >= 80 => 'جيد جدًا',
-                            $nilaiPengetahuan >= 70 => 'جيد',
-                            $nilaiPengetahuan >= 60 => 'مقبول',
+                            $nilaiPengetahuan >= 85 => 'جيد جدًا',
+                            $nilaiPengetahuan >= 75 => 'جيد',
+                            $nilaiPengetahuan >= 70 => 'مقبول',
                             default => 'ضعيف',
                         };
                         

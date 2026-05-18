@@ -292,7 +292,7 @@
                 <td class="label">العام الدراسي</td>
                 <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">{{ strtoupper($siswa->nama_arabic) }}</td>
                 <td class="separator">:</td>
-                <td class="label">اسم</td>
+                <td class="label">اسم الطالب / الطالبة</td>
             </tr>
             <tr>
                 <td class="value" style="text-align: right;">
@@ -355,9 +355,9 @@
                         // Only calculate predikat if nilai is not empty
                         $predikat = $isEmptyNilai ? '-' : match(true) {
                             $nilaiPengetahuan >= 90 => 'ممتاز',
-                            $nilaiPengetahuan >= 80 => 'جيد جدًا',
-                            $nilaiPengetahuan >= 70 => 'جيد',
-                            $nilaiPengetahuan >= 60 => 'مقبول',
+                            $nilaiPengetahuan >= 85 => 'جيد جدًا',
+                            $nilaiPengetahuan >= 75 => 'جيد',
+                            $nilaiPengetahuan >= 70 => 'مقبول',
                             default => 'ضعيف',
                         };
                         
