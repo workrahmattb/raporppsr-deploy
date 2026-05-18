@@ -326,7 +326,7 @@
                 <tr>
                     <th width="25%"
                         style="font-size:20px; font-family: DejaVu Sans; direction: rtl;">
-                        التقدير
+                        تقديرا
                     </th>
                     <th width="20%"
                         style="font-size:20px; font-family: DejaVu Sans; direction: rtl;">
