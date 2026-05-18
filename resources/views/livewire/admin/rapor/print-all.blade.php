@@ -276,7 +276,7 @@
                 <td class="label">العام الدراسي</td>
                 <td style="font-size:12px; font-family: DejaVu Sans; text-align: right;">{{ strtoupper($siswa->nama_arabic) }}</td>
                 <td class="separator">:</td>
-                <td class="label">اسم الطالب / الطالبة</td>
+                <td class="label">اسم الطالبة</td>
             </tr>
             <tr>
                 <td class="value" style="text-align: right;">
