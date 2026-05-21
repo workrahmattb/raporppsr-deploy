@@ -34,14 +34,24 @@ class Index extends Component
         if (!$this->kelasId || !$this->semesterId) {
             $this->legerData = [];
             $this->mataPelajarans = [];
+            $this->averages = [];
+            $this->rankings = [];
             return;
         }
 
         $this->kelas = KelasRapor::with('tahunAjaran')->find($this->kelasId);
 
         if (!$this->kelas) {
+            $this->legerData = [];
+            $this->mataPelajarans = [];
+            $this->averages = [];
+            $this->rankings = [];
             return;
         }
+
+        // Reset averages and rankings to prevent leaking data from previous class selection
+        $this->averages = [];
+        $this->rankings = [];
 
         // Get all mata pelajaran taught in this class (by tingkat)
         $this->mataPelajarans = DB::table('guru_mata_pelajaran')

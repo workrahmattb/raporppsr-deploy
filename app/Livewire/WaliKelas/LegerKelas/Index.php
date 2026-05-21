@@ -52,10 +52,16 @@ class Index extends Component
         if (!$this->kelas || !$this->semesterId) {
             $this->legerData = [];
             $this->mataPelajarans = [];
+            $this->averages = [];
+            $this->rankings = [];
             return;
         }
 
         // Get all mata pelajaran taught in this class (by tingkat)
+        // Reset averages and rankings to prevent leaking data from previous class selection
+        $this->averages = [];
+        $this->rankings = [];
+
         $this->mataPelajarans = DB::table('guru_mata_pelajaran')
             ->join('mata_pelajarans', 'guru_mata_pelajaran.mata_pelajaran_id', '=', 'mata_pelajarans.id')
             ->where('guru_mata_pelajaran.tingkat', $this->kelas->tingkat)
