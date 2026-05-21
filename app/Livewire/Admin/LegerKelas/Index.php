@@ -57,7 +57,7 @@ class Index extends Component
             ->join('siswas_rapor', 'kelas_siswa.siswa_id', '=', 'siswas_rapor.id')
             ->where('kelas_siswa.kelas_id', $this->kelasId)
             ->select('siswas_rapor.*', 'kelas_siswa.nomor_absen')
-            ->orderBy('kelas_siswa.nomor_absen')
+            ->orderBy('siswas_rapor.nama')
             ->get();
 
         // Get all nilais for this class and semester
