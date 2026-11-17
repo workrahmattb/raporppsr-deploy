@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'sekolah_id',
         'role',
+        'kategori_admin',
         'session_tahun_ajaran_id',
         'session_semester_id',
     ];
@@ -94,9 +95,41 @@ class User extends Authenticatable
     }
 
     // Helper methods
-    public function isAdmin()
+    public function isSuperAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['super_admin', 'admin'], true);
+    }
+
+    /** @return list<string> */
+    public function kategoriDiizinkan(): array
+    {
+        if ($this->isSuperAdmin()) {
+            return ['Putra', 'Putri'];
+        }
+
+        return $this->role === 'admin' && in_array($this->kategori_admin, ['Putra', 'Putri'], true)
+            ? [$this->kategori_admin] : [];
+    }
+
+    public function dapatMengaksesKategori(string $kategori): bool
+    {
+        return in_array($kategori, $this->kategoriDiizinkan(), true);
+    }
+
+    public function roleLabel(): string
+    {
+        return match ($this->role) {
+            'super_admin' => 'Super Admin',
+            'admin' => 'Admin'.($this->kategori_admin ? ' '.$this->kategori_admin : ''),
+            'guru' => 'Guru',
+            'wali_kelas' => 'Wali Kelas',
+            default => '-',
+        };
     }
 
     public function isGuru()
@@ -119,7 +152,7 @@ class User extends Authenticatable
 
     public function hasSelectedAcademicPeriod()
     {
-        return !is_null($this->session_tahun_ajaran_id) && !is_null($this->session_semester_id);
+        return ! is_null($this->session_tahun_ajaran_id) && ! is_null($this->session_semester_id);
     }
 
     public function getSessionTahunAjaran()

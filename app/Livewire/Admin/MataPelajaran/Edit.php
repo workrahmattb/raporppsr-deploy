@@ -2,17 +2,23 @@
 
 namespace App\Livewire\Admin\MataPelajaran;
 
-use Livewire\Component;
 use App\Models\MataPelajaran;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public $mataPelajaranId;
+
     public $kode = '';
+
     public $nama = '';
+
     public $namapelajaran_arabic = '';
+
     public $kelompok = 'A';
+
     public $tingkat = '';
+
     public $kkm = 75;
 
     protected $rules = [
@@ -36,8 +42,8 @@ class Edit extends Component
     public function mount($id)
     {
         $this->mataPelajaranId = $id;
-        $mataPelajaran = MataPelajaran::findOrFail($id);
-        
+        $mataPelajaran = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($id);
+
         $this->kode = $mataPelajaran->kode;
         $this->nama = $mataPelajaran->nama;
         $this->namapelajaran_arabic = $mataPelajaran->namapelajaran_arabic;
@@ -50,7 +56,7 @@ class Edit extends Component
     {
         $this->validate();
 
-        $mataPelajaran = MataPelajaran::findOrFail($this->mataPelajaranId);
+        $mataPelajaran = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($this->mataPelajaranId);
         $mataPelajaran->update([
             'kode' => $this->kode,
             'nama' => $this->nama,

@@ -2,22 +2,27 @@
 
 namespace App\Livewire\Admin\MataPelajaran;
 
+use App\Models\MataPelajaran;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MataPelajaran;
 
 class Index extends Component
 {
     use WithPagination;
 
     public $search = '';
+
     public $kelompok = '';
+
     public $tingkat = '';
+
     public $confirmingDeletion = false;
+
     public $mataPelajaranToDelete = null;
 
     // Inline editing for Arabic names
     public $editingNamaArabic = [];
+
     public $namaArabicValues = [];
 
     protected $queryString = ['search', 'kelompok', 'tingkat'];
@@ -45,19 +50,19 @@ class Index extends Component
 
     public function delete()
     {
-        $mataPelajaran = MataPelajaran::findOrFail($this->mataPelajaranToDelete);
+        $mataPelajaran = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($this->mataPelajaranToDelete);
         $mataPelajaran->delete();
-        
+
         $this->confirmingDeletion = false;
         $this->mataPelajaranToDelete = null;
-        
+
         session()->flash('message', 'Mata pelajaran berhasil dihapus.');
     }
 
     public function editNamaArabic($mataPelajaranId)
     {
         $this->editingNamaArabic[$mataPelajaranId] = true;
-        $mataPelajaran = MataPelajaran::find($mataPelajaranId);
+        $mataPelajaran = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)->find($mataPelajaranId);
         $this->namaArabicValues[$mataPelajaranId] = $mataPelajaran->namapelajaran_arabic ?? '';
     }
 
@@ -69,9 +74,9 @@ class Index extends Component
 
     public function updateNamaArabic($mataPelajaranId)
     {
-        $mataPelajaran = MataPelajaran::findOrFail($mataPelajaranId);
+        $mataPelajaran = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($mataPelajaranId);
         $mataPelajaran->update([
-            'namapelajaran_arabic' => $this->namaArabicValues[$mataPelajaranId] ?? null
+            'namapelajaran_arabic' => $this->namaArabicValues[$mataPelajaranId] ?? null,
         ]);
 
         $this->editingNamaArabic[$mataPelajaranId] = false;
@@ -81,16 +86,16 @@ class Index extends Component
     public function render()
     {
         $mataPelajarans = MataPelajaran::where('sekolah_id', auth()->user()->sekolah_id)
-            ->when($this->search, function($query) {
-                $query->where(function($q) {
-                    $q->where('nama', 'like', '%' . $this->search . '%')
-                      ->orWhere('kode', 'like', '%' . $this->search . '%');
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('nama', 'like', '%'.$this->search.'%')
+                        ->orWhere('kode', 'like', '%'.$this->search.'%');
                 });
             })
-            ->when($this->kelompok, function($query) {
+            ->when($this->kelompok, function ($query) {
                 $query->where('kelompok', $this->kelompok);
             })
-            ->when($this->tingkat, function($query) {
+            ->when($this->tingkat, function ($query) {
                 $query->where('tingkat', $this->tingkat);
             })
             ->orderBy('kelompok')
@@ -98,7 +103,7 @@ class Index extends Component
             ->paginate(15);
 
         return view('livewire.admin.mata-pelajaran.index', [
-            'mataPelajarans' => $mataPelajarans
+            'mataPelajarans' => $mataPelajarans,
         ])->layout('layouts.app', ['title' => 'Kelola Mata Pelajaran']);
     }
 }

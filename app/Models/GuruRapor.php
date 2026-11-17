@@ -48,8 +48,8 @@ class GuruRapor extends Model
     public function mataPelajarans()
     {
         return $this->belongsToMany(MataPelajaran::class, 'guru_mata_pelajaran', 'guru_id', 'mata_pelajaran_id')
-                    ->withPivot('tingkat')
-                    ->withTimestamps();
+            ->withPivot('tingkat', 'kategori')
+            ->withTimestamps();
     }
 
     public function kelasWali()

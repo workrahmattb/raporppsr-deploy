@@ -2,14 +2,17 @@
 
 namespace App\Livewire\Admin\TahunAjaran;
 
-use Livewire\Component;
 use App\Models\TahunAjaran;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public $tahunAjaranId;
+
     public $tahun = '';
+
     public $tanggal_mulai = '';
+
     public $tanggal_selesai = '';
 
     protected $rules = [
@@ -27,9 +30,10 @@ class Edit extends Component
 
     public function mount($id)
     {
+        abort_unless(auth()->user()?->isSuperAdmin(), 403);
         $this->tahunAjaranId = $id;
         $tahunAjaran = TahunAjaran::findOrFail($id);
-        
+
         $this->tahun = $tahunAjaran->tahun;
         $this->tanggal_mulai = $tahunAjaran->tanggal_mulai->format('Y-m-d');
         $this->tanggal_selesai = $tahunAjaran->tanggal_selesai->format('Y-m-d');
@@ -37,6 +41,7 @@ class Edit extends Component
 
     public function update()
     {
+        abort_unless(auth()->user()?->isSuperAdmin(), 403);
         $this->validate();
 
         $tahunAjaran = TahunAjaran::findOrFail($this->tahunAjaranId);
@@ -47,6 +52,7 @@ class Edit extends Component
         ]);
 
         session()->flash('message', 'Tahun ajaran berhasil diperbarui.');
+
         return redirect()->route('admin.tahun-ajaran.index');
     }
 

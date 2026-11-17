@@ -2,20 +2,25 @@
 
 namespace App\Livewire\Admin\Kelas;
 
+use App\Models\KelasRapor;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\KelasRapor;
 
 class Index extends Component
 {
     use WithPagination;
 
     public $search = '';
+
     public $tahun_ajaran_filter = '';
+
+    public string $kategori_filter = '';
+
     public $confirmingDeletion = false;
+
     public $kelasToDelete = null;
 
-    protected $queryString = ['search', 'tahun_ajaran_filter'];
+    protected $queryString = ['search', 'tahun_ajaran_filter', 'kategori_filter'];
 
     public function updatingSearch()
     {
@@ -23,6 +28,11 @@ class Index extends Component
     }
 
     public function updatingTahunAjaranFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingKategoriFilter(): void
     {
         $this->resetPage();
     }
@@ -37,10 +47,10 @@ class Index extends Component
     {
         $kelas = KelasRapor::findOrFail($this->kelasToDelete);
         $kelas->delete();
-        
+
         $this->confirmingDeletion = false;
         $this->kelasToDelete = null;
-        
+
         session()->flash('message', 'Kelas berhasil dihapus.');
     }
 
@@ -51,22 +61,25 @@ class Index extends Component
             ->get();
 
         $kelas = KelasRapor::with(['tahunAjaran', 'waliKelas'])
-            ->whereHas('tahunAjaran', function($q) {
+            ->whereHas('tahunAjaran', function ($q) {
                 $q->where('sekolah_id', auth()->user()->sekolah_id);
             })
-            ->when($this->search, function($query) {
-                $search = '%' . $this->search . '%';
-                $query->where(function($q) use ($search) {
+            ->when($this->search, function ($query) {
+                $search = '%'.$this->search.'%';
+                $query->where(function ($q) use ($search) {
                     $q->where('nama', 'like', $search)
-                      ->orWhere('tingkat', 'like', $search)
-                      ->orWhereHas('siswas', function($sq) use ($search) {
-                          $sq->where('nama', 'like', $search)
-                            ->orWhere('nisn', 'like', $search);
-                      });
+                        ->orWhere('tingkat', 'like', $search)
+                        ->orWhereHas('siswas', function ($sq) use ($search) {
+                            $sq->where('nama', 'like', $search)
+                                ->orWhere('nisn', 'like', $search);
+                        });
                 });
             })
-            ->when($this->tahun_ajaran_filter, function($query) {
+            ->when($this->tahun_ajaran_filter, function ($query) {
                 $query->where('tahun_ajaran_id', $this->tahun_ajaran_filter);
+            })
+            ->when($this->kategori_filter, function ($query) {
+                $query->where('kategori', $this->kategori_filter);
             })
             ->orderBy('tingkat')
             ->orderBy('nama')
@@ -74,7 +87,7 @@ class Index extends Component
 
         return view('livewire.admin.kelas.index', [
             'kelas' => $kelas,
-            'tahunAjarans' => $tahunAjarans
+            'tahunAjarans' => $tahunAjarans,
         ])->layout('layouts.app', ['title' => 'Kelola Kelas']);
     }
 }

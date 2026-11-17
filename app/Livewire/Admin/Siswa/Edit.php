@@ -2,26 +2,43 @@
 
 namespace App\Livewire\Admin\Siswa;
 
-use Livewire\Component;
 use App\Models\SiswaRapor;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public $siswaId;
+
     public $nisn = '';
+
+    public string $kategori = 'Putri';
+
     public $nis = '';
+
     public $nama = '';
+
     public $nama_arabic = '';
+
     public $jenis_kelamin = '';
+
     public $tempat_lahir = '';
+
     public $tanggal_lahir = '';
+
     public $alamat = '';
+
     public $telepon = '';
+
     public $email = '';
+
     public $nama_ayah = '';
+
     public $nama_ibu = '';
+
     public $telepon_ortu = '';
+
     public $tanggal_masuk = '';
+
     public $status = 'Aktif';
 
     protected $rules = [
@@ -29,6 +46,7 @@ class Edit extends Component
         'nis' => 'nullable|string|max:255',
         'nama' => 'required|string|max:255',
         'jenis_kelamin' => 'required|in:L,P',
+        'kategori' => 'required|in:Putra,Putri',
         'tempat_lahir' => 'nullable|string|max:255',
         'tanggal_lahir' => 'nullable|date',
         'alamat' => 'nullable|string',
@@ -44,11 +62,12 @@ class Edit extends Component
     public function rules()
     {
         return [
-            'nisn' => 'required|string|max:255|unique:siswas_rapor,nisn,' . $this->siswaId,
-            'nis' => 'nullable|string|max:255|unique:siswas_rapor,nis,' . $this->siswaId,
+            'nisn' => 'required|string|max:255|unique:siswas_rapor,nisn,'.$this->siswaId,
+            'nis' => 'nullable|string|max:255|unique:siswas_rapor,nis,'.$this->siswaId,
             'nama' => 'required|string|max:255',
             'nama_arabic' => 'nullable|string|max:255',
             'jenis_kelamin' => 'required|in:L,P',
+            'kategori' => 'required|in:Putra,Putri',
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
@@ -73,7 +92,8 @@ class Edit extends Component
     {
         $this->siswaId = $id;
         $siswa = SiswaRapor::findOrFail($id);
-        
+
+        $this->kategori = $siswa->kategori;
         $this->nisn = $siswa->nisn;
         $this->nis = $siswa->nis;
         $this->nama = $siswa->nama;
@@ -100,6 +120,7 @@ class Edit extends Component
             'nisn' => $this->nisn,
             'nis' => $this->nis ?: null, // Convert empty string to null
             'nama' => $this->nama,
+            'kategori' => $this->kategori,
             'nama_arabic' => $this->nama_arabic,
             'jenis_kelamin' => $this->jenis_kelamin,
             'tempat_lahir' => $this->tempat_lahir,
@@ -120,6 +141,8 @@ class Edit extends Component
 
     public function render()
     {
+        SiswaRapor::findOrFail($this->siswaId);
+
         return view('livewire.admin.siswa.edit')->layout('layouts.app', ['title' => 'Edit Siswa']);
     }
 }

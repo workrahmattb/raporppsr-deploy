@@ -2,27 +2,35 @@
 
 namespace App\Livewire\Admin\Kelas;
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Models\KelasRapor;
 use App\Models\SiswaRapor;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class ManageSiswa extends Component
 {
     use WithPagination;
-    
+
     public $kelasId;
+
     public $kelas;
+
     public $siswaId;
+
     public $confirmingDeletion = false;
+
     public $siswaToDelete = null;
+
     public $editingNamaArabic = [];
+
     public $namaArabicValues = [];
-    
+
     // Search properties
     public $searchSiswa = '';
+
     public $selectedSiswa = null;
+
     public $showDropdown = false;
 
     protected $rules = [
@@ -57,7 +65,9 @@ class ManageSiswa extends Component
 
     public function addSiswa()
     {
+        $this->kelas = KelasRapor::findOrFail($this->kelasId);
         $this->validate();
+        SiswaRapor::where('kategori', $this->kelas->kategori)->where('sekolah_id', $this->kelas->tahunAjaran->sekolah_id)->findOrFail($this->siswaId);
 
         // Check if siswa already in this kelas
         $exists = DB::table('kelas_siswa')
@@ -67,6 +77,7 @@ class ManageSiswa extends Component
 
         if ($exists) {
             $this->addError('siswaId', 'Siswa sudah ada di kelas ini');
+
             return;
         }
 
@@ -93,6 +104,7 @@ class ManageSiswa extends Component
 
     public function deleteSiswa()
     {
+        $this->kelas = KelasRapor::findOrFail($this->kelasId);
         DB::table('kelas_siswa')
             ->where('kelas_id', $this->kelasId)
             ->where('siswa_id', $this->siswaToDelete)
@@ -112,9 +124,10 @@ class ManageSiswa extends Component
 
     public function updateNamaArabic($siswaId)
     {
-        $siswa = SiswaRapor::findOrFail($siswaId);
+        $this->kelas = KelasRapor::findOrFail($this->kelasId);
+        $siswa = SiswaRapor::whereHas('kelas', fn ($query) => $query->where('kelas_rapor.id', $this->kelasId))->findOrFail($siswaId);
         $siswa->update([
-            'nama_arabic' => $this->namaArabicValues[$siswaId] ?? null
+            'nama_arabic' => $this->namaArabicValues[$siswaId] ?? null,
         ]);
 
         $this->editingNamaArabic[$siswaId] = false;
@@ -129,6 +142,7 @@ class ManageSiswa extends Component
 
     public function getAvailableSiswasProperty()
     {
+        $this->kelas = KelasRapor::findOrFail($this->kelasId);
         // Get siswa IDs already in any kelas
         $siswaIdsInAnyKelas = DB::table('kelas_siswa')
             ->pluck('siswa_id')
@@ -136,13 +150,14 @@ class ManageSiswa extends Component
 
         // Get available students with search
         $query = SiswaRapor::where('sekolah_id', auth()->user()->sekolah_id)
+            ->where('kategori', $this->kelas->kategori)
             ->whereNotIn('id', $siswaIdsInAnyKelas);
 
         // Apply search filter
         if ($this->searchSiswa) {
-            $query->where(function($q) {
-                $q->where('nama', 'like', '%' . $this->searchSiswa . '%')
-                  ->orWhere('nisn', 'like', '%' . $this->searchSiswa . '%');
+            $query->where(function ($q) {
+                $q->where('nama', 'like', '%'.$this->searchSiswa.'%')
+                    ->orWhere('nisn', 'like', '%'.$this->searchSiswa.'%');
             });
         }
 
@@ -151,6 +166,7 @@ class ManageSiswa extends Component
 
     public function render()
     {
+        $this->kelas = KelasRapor::findOrFail($this->kelasId);
         // Get students already in this class - sorted alphabetically with pagination
         $siswasDiKelas = DB::table('kelas_siswa')
             ->join('siswas_rapor', 'kelas_siswa.siswa_id', '=', 'siswas_rapor.id')
@@ -161,6 +177,6 @@ class ManageSiswa extends Component
 
         return view('livewire.admin.kelas.manage-siswa', [
             'siswasDiKelas' => $siswasDiKelas,
-        ])->layout('layouts.app', ['title' => 'Kelola Siswa - ' . $this->kelas->nama]);
+        ])->layout('layouts.app', ['title' => 'Kelola Siswa - '.$this->kelas->nama]);
     }
 }

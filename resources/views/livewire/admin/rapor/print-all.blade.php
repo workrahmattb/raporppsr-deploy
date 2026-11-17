@@ -1,3 +1,7 @@
+@php
+    $tampilanRapor = $settings->tampilanUntuk($kelas->kategori);
+    $logoRapor = $settings->logoDataUntuk($kelas->kategori);
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -244,12 +248,12 @@
     <table class="header-table">
         <tr>
             <td width="15%" align="center">
-                <img src="{{ public_path('img/logo-ppsr.png') }}" class="logo-img">
+                <img src="{{ $logoRapor }}" class="logo-img">
             </td>
             <td width="85%" align="center">
                 <div class="header-text">
-                    <h1 class="header-title">كشف الدرجات</h1>
-                    <h2 class="header-subtitle">لطلبة معهد شفاعة الرسول الإسلامي</h2>
+                    <h1 class="header-title">{{ $tampilanRapor['judul'] }}</h1>
+                    <h2 class="header-subtitle">{{ $tampilanRapor['subjudul'] }}</h2>
                 </div>
             </td>
         </tr>
@@ -393,7 +397,7 @@
 
     <!-- Signatures -->
     <div class="date-line">
-        <span style="font-family: DejaVu Sans; font-size: 18px; direction: rtl;">{{ $settings->tanggal_rapor ?? '٢ محرم ١٤٤٨, تلوك كوانتن' }}</span>
+        <span style="font-family: DejaVu Sans; font-size: 18px; direction: rtl;">{{ $settings->tanggalRaporUntuk($kelas->kategori) ?: '-' }}</span>
     </div>
     
     <table class="footer-table">
@@ -405,12 +409,7 @@
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
                 @php
-                    $tingkat = $kelas->tingkat ?? null;
-                    $kepalaMadrasah = $settings->kepala_sekolah_ma ?? 'Dina Yulesti, M.Pd';
-                    
-                    if (in_array($tingkat, [7, 8, 9, '7', '8', '9', 'VII', 'VIII', 'IX'])) {
-                        $kepalaMadrasah = $settings->kepala_sekolah_mts ?? 'S.Pd مارديه روسنيله نينغسيه';
-                    }
+                    $kepalaMadrasah = $settings->kepalaSekolahUntuk($kelas->kategori, (string) $kelas->tingkat) ?: '-';
                 @endphp
                 <div class="sign-name">{{ $kepalaMadrasah }}</div>
             </td>
@@ -425,7 +424,7 @@
                 </div>
             </td>
             <td class="sign-col">
-                <div class="sign-role">ولي الامر</div>  
+                <div class="sign-role">ولي الامر</div>
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>
                 <div class="sign-spacer">&nbsp;</div>

@@ -2,25 +2,41 @@
 
 namespace App\Livewire\Admin\Siswa;
 
-use Livewire\Component;
 use App\Models\SiswaRapor;
+use Livewire\Component;
 
 class Create extends Component
 {
     public $nisn = '';
+
+    public string $kategori = 'Putri';
+
     public $nis = '';
+
     public $nama = '';
+
     public $nama_arabic = '';
+
     public $jenis_kelamin = '';
+
     public $tempat_lahir = '';
+
     public $tanggal_lahir = '';
+
     public $alamat = '';
+
     public $telepon = '';
+
     public $email = '';
+
     public $nama_ayah = '';
+
     public $nama_ibu = '';
+
     public $telepon_ortu = '';
+
     public $tanggal_masuk = '';
+
     public $status = 'Aktif';
 
     protected $rules = [
@@ -29,6 +45,7 @@ class Create extends Component
         'nama' => 'required|string|max:255',
         'nama_arabic' => 'nullable|string|max:255',
         'jenis_kelamin' => 'required|in:L,P',
+        'kategori' => 'required|in:Putra,Putri',
         'tempat_lahir' => 'nullable|string|max:255',
         'tanggal_lahir' => 'nullable|date',
         'alamat' => 'nullable|string',
@@ -49,6 +66,11 @@ class Create extends Component
         'status.required' => 'Status harus dipilih',
     ];
 
+    public function mount(): void
+    {
+        $this->kategori = auth()->user()->kategoriDiizinkan()[0] ?? '';
+    }
+
     public function save()
     {
         $this->validate();
@@ -58,6 +80,7 @@ class Create extends Component
             'nisn' => $this->nisn,
             'nis' => $this->nis ?: null, // Convert empty string to null
             'nama' => $this->nama,
+            'kategori' => $this->kategori,
             'nama_arabic' => $this->nama_arabic,
             'jenis_kelamin' => $this->jenis_kelamin,
             'tempat_lahir' => $this->tempat_lahir,
@@ -73,6 +96,7 @@ class Create extends Component
         ]);
 
         session()->flash('message', 'Siswa berhasil ditambahkan.');
+
         return redirect()->route('admin.siswa.index');
     }
 

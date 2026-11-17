@@ -2,22 +2,25 @@
 
 namespace App\Livewire\Admin\Rapor;
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Models\KelasRapor;
 use App\Models\Semester;
 use App\Models\TahunAjaran;
 use DB;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
 
     protected $paginationTheme = 'tailwind';
-    
+
     public $tahunAjaranId;
+
     public $kelasId;
+
     public $semesterId;
+
     public $search = '';
 
     public function mount()
@@ -48,18 +51,21 @@ class Index extends Component
         $this->resetPage();
     }
 
-
     public function printAllByClass()
     {
         $kelasId = request()->query('kelasId');
         $semesterId = request()->query('semesterId');
 
-        if (!$kelasId || !$semesterId) {
+        if (! $kelasId || ! $semesterId) {
             abort(400, 'Pilih kelas dan semester terlebih dahulu');
         }
 
+        $kelas = KelasRapor::with('waliKelas')->findOrFail($kelasId);
+
         // Get all students in the selected class
         $siswas = DB::table('kelas_siswa')
+            ->whereIn('kelas_siswa.kelas_id', KelasRapor::query()->select('id'))
+            ->whereIn('kelas_siswa.siswa_id', \App\Models\SiswaRapor::query()->select('id'))
             ->join('siswas_rapor', 'kelas_siswa.siswa_id', '=', 'siswas_rapor.id')
             ->where('kelas_siswa.kelas_id', $kelasId)
             ->orderBy('kelas_siswa.nomor_absen')
@@ -70,7 +76,7 @@ class Index extends Component
         }
 
         // Get kelas info
-        $kelas = KelasRapor::with('waliKelas')->find($kelasId);
+
         $semester = Semester::with('tahunAjaran')->find($semesterId);
         $settings = \App\Models\RaporSetting::getSettings();
 
@@ -114,20 +120,19 @@ class Index extends Component
             'orientation' => 'P',
         ]);
 
-        return response()->streamDownload(function() use ($pdf) {
+        return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
-        }, 'rapor-' . $kelas->nama . '-' . $semester->nama . '.pdf');
+        }, 'rapor-'.$kelas->nama.'-'.$semester->nama.'.pdf');
     }
-
 
     public function render()
     {
         $tahunAjarans = TahunAjaran::orderBy('tanggal_mulai', 'desc')->get();
         $semesters = Semester::orderBy('tahun_ajaran_id', 'desc')->orderBy('nama')->get();
-        
+
         // Get kelas based on selected tahun ajaran
         $kelas = KelasRapor::query()
-            ->when($this->tahunAjaranId, function($query) {
+            ->when($this->tahunAjaranId, function ($query) {
                 $query->where('tahun_ajaran_id', $this->tahunAjaranId);
             })
             ->orderBy('nama')
@@ -135,6 +140,8 @@ class Index extends Component
 
         // Get paginated students
         $siswas = DB::table('kelas_siswa')
+            ->whereIn('kelas_siswa.kelas_id', KelasRapor::query()->select('id'))
+            ->whereIn('kelas_siswa.siswa_id', \App\Models\SiswaRapor::query()->select('id'))
             ->join('siswas_rapor', 'kelas_siswa.siswa_id', '=', 'siswas_rapor.id')
             ->join('kelas_rapor', 'kelas_siswa.kelas_id', '=', 'kelas_rapor.id')
             ->select(
@@ -144,14 +151,14 @@ class Index extends Component
                 'kelas_rapor.nama as kelas_nama',
                 'kelas_rapor.tingkat as kelas_tingkat'
             )
-            ->when($this->kelasId, function($query) {
+            ->when($this->kelasId, function ($query) {
                 $query->where('kelas_siswa.kelas_id', $this->kelasId);
             })
-            ->when($this->tahunAjaranId, function($query) {
+            ->when($this->tahunAjaranId, function ($query) {
                 $query->where('kelas_rapor.tahun_ajaran_id', $this->tahunAjaranId);
             })
-            ->when($this->search, function($query) {
-                $query->where('siswas_rapor.nama', 'like', '%' . $this->search . '%');
+            ->when($this->search, function ($query) {
+                $query->where('siswas_rapor.nama', 'like', '%'.$this->search.'%');
             })
             ->orderBy('kelas_rapor.nama')
             ->orderBy('kelas_siswa.nomor_absen')
@@ -161,7 +168,7 @@ class Index extends Component
             'tahunAjarans' => $tahunAjarans,
             'kelas' => $kelas,
             'semesters' => $semesters,
-            'siswas' => $siswas
+            'siswas' => $siswas,
         ])->layout('layouts.app', ['title' => 'Cetak Rapor']);
     }
 }

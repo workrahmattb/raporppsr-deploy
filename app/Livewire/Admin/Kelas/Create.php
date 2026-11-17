@@ -2,19 +2,25 @@
 
 namespace App\Livewire\Admin\Kelas;
 
-use Livewire\Component;
+use App\Models\GuruRapor;
 use App\Models\KelasRapor;
 use App\Models\TahunAjaran;
-use App\Models\GuruRapor;
+use Livewire\Component;
 
 class Create extends Component
 {
     public $tahun_ajaran_id = '';
+
     public $wali_kelas_id = '';
+
     public $nama = '';
+
     public $tingkat = '';
 
+    public string $kategori = 'Putri';
+
     protected $rules = [
+        'kategori' => 'required|in:Putra,Putri',
         'tahun_ajaran_id' => 'required|exists:tahun_ajarans,id',
         'wali_kelas_id' => 'nullable|exists:gurus_rapor,id',
         'nama' => 'required|string|max:255',
@@ -22,6 +28,8 @@ class Create extends Component
     ];
 
     protected $messages = [
+        'kategori.required' => 'Kategori kelas harus dipilih',
+        'kategori.in' => 'Kategori kelas harus Putra atau Putri',
         'tahun_ajaran_id.required' => 'Tahun ajaran harus dipilih',
         'nama.required' => 'Nama kelas harus diisi',
         'tingkat.required' => 'Tingkat harus dipilih',
@@ -32,6 +40,11 @@ class Create extends Component
         'kapasitas.max' => 'Kapasitas maksimal 100',
     ];
 
+    public function mount(): void
+    {
+        $this->kategori = auth()->user()->kategoriDiizinkan()[0] ?? '';
+    }
+
     public function save()
     {
         $this->validate();
@@ -39,14 +52,14 @@ class Create extends Component
         KelasRapor::create([
             'sekolah_id' => auth()->user()->sekolah_id,
             'tahun_ajaran_id' => $this->tahun_ajaran_id,
+            'kategori' => $this->kategori,
             'wali_kelas_id' => $this->wali_kelas_id ?: null,
-            'nama' => $this->nama,
-            'tingkat' => $this->convertToRoman($this->tingkat),
             'nama' => $this->nama,
             'tingkat' => $this->convertToRoman($this->tingkat),
         ]);
 
         session()->flash('message', 'Kelas berhasil ditambahkan.');
+
         return redirect()->route('admin.kelas.index');
     }
 
@@ -54,8 +67,9 @@ class Create extends Component
     {
         $map = [
             1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
-            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII',
         ];
+
         return $map[$number] ?? $number;
     }
 
@@ -72,7 +86,7 @@ class Create extends Component
 
         return view('livewire.admin.kelas.create', [
             'tahunAjarans' => $tahunAjarans,
-            'waliKelas' => $waliKelas
+            'waliKelas' => $waliKelas,
         ])->layout('layouts.app', ['title' => 'Tambah Kelas']);
     }
 }

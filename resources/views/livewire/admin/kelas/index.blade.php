@@ -25,7 +25,7 @@
 
     <!-- Search & Filter -->
     <div class="mb-6 bg-white rounded-lg shadow-md p-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Search -->
             <div class="relative">
                 <input wire:model.live="search" type="text" placeholder="Cari kelas, tingkat, atau nama siswa..."
@@ -35,6 +35,15 @@
                 </svg>
             </div>
             
+            <div>
+                <select wire:model.live="kategori_filter" aria-label="Filter kategori kelas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">Semua Kategori</option>
+                    @foreach(auth()->user()->kategoriDiizinkan() as $kategoriPilihan)
+                        <option value="{{ $kategoriPilihan }}">{{ $kategoriPilihan }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Filter Tahun Ajaran -->
             <div>
                 <select wire:model.live="tahun_ajaran_filter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -69,7 +78,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $k->nama }}</div>
-                                    <div class="text-sm text-gray-500">Tingkat {{ $k->tingkat }}</div>
+                                    <div class="text-sm text-gray-500">Tingkat {{ $k->tingkat }} · {{ $k->kategori }}</div>
                                 </div>
                             </div>
                         </td>

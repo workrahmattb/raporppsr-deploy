@@ -2,17 +2,20 @@
 
 namespace App\Livewire\Admin\Guru;
 
+use App\Models\GuruRapor;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\GuruRapor;
 
 class Index extends Component
 {
     use WithPagination;
 
     public $search = '';
+
     public $status_filter = '';
+
     public $confirmingDeletion = false;
+
     public $guruToDelete = null;
 
     protected $queryString = ['search', 'status_filter'];
@@ -36,7 +39,7 @@ class Index extends Component
     public function delete()
     {
         if ($this->guruToDelete) {
-            GuruRapor::findOrFail($this->guruToDelete)->delete();
+            GuruRapor::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($this->guruToDelete)->delete();
             session()->flash('message', 'Guru berhasil dihapus.');
             $this->confirmingDeletion = false;
             $this->guruToDelete = null;
@@ -48,9 +51,9 @@ class Index extends Component
         $gurus = GuruRapor::where('sekolah_id', auth()->user()->sekolah_id)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('nama', 'like', '%' . $this->search . '%')
-                      ->orWhere('nip', 'like', '%' . $this->search . '%')
-                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                    $q->where('nama', 'like', '%'.$this->search.'%')
+                        ->orWhere('nip', 'like', '%'.$this->search.'%')
+                        ->orWhere('email', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->status_filter, function ($query) {
@@ -60,7 +63,7 @@ class Index extends Component
             ->paginate(10);
 
         return view('livewire.admin.guru.index', [
-            'gurus' => $gurus
+            'gurus' => $gurus,
         ])->layout('layouts.app', ['title' => 'Kelola Guru']);
     }
 }

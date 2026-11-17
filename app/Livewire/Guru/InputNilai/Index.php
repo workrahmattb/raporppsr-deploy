@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Guru\InputNilai;
 
-use Livewire\Component;
 use App\Models\GuruRapor;
 use App\Models\KelasRapor;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class Index extends Component
 {
@@ -13,9 +13,9 @@ class Index extends Component
     {
         $guru = GuruRapor::where('user_id', auth()->id())->first();
 
-        if (!$guru) {
+        if (! $guru) {
             return view('livewire.guru.input-nilai.index', [
-                'assignments' => collect([])
+                'assignments' => collect([]),
             ])->layout('layouts.app', ['title' => 'Input Nilai']);
         }
 
@@ -27,36 +27,39 @@ class Index extends Component
                 'guru_mata_pelajaran.id as assignment_id',
                 'mata_pelajarans.id as mata_pelajaran_id',
                 'mata_pelajarans.nama as mata_pelajaran_nama',
-                'guru_mata_pelajaran.tingkat'
+                'guru_mata_pelajaran.tingkat',
+                'guru_mata_pelajaran.kategori'
             )
             ->get();
 
         // Group assignments by tingkat and mapel, then expand to all classes in that tingkat
         $expandedAssignments = collect([]);
-        
+
         foreach ($assignments as $assignment) {
             // Get all classes in this tingkat with active tahun ajaran
             $kelasList = KelasRapor::where('tingkat', $assignment->tingkat)
-                ->whereHas('tahunAjaran', function($q) {
-                    $q->where('is_active', true);
+                ->where('kategori', $assignment->kategori)
+                ->whereHas('tahunAjaran', function ($q) {
+                    $q->where('is_active', true)
+                        ->where('sekolah_id', auth()->user()->sekolah_id);
                 })
                 ->orderBy('nama')
                 ->get();
 
             foreach ($kelasList as $kelas) {
-                $expandedAssignments->push((object)[
+                $expandedAssignments->push((object) [
                     'assignment_id' => $assignment->assignment_id,
                     'mata_pelajaran_id' => $assignment->mata_pelajaran_id,
                     'mata_pelajaran_nama' => $assignment->mata_pelajaran_nama,
                     'kelas_id' => $kelas->id,
-                    'kelas_nama' => $kelas->nama,
+                    'kelas_nama' => $kelas->nama.' ('.$kelas->kategori.')',
                     'kelas_tingkat' => $kelas->tingkat,
                 ]);
             }
         }
 
         return view('livewire.guru.input-nilai.index', [
-            'assignments' => $expandedAssignments
+            'assignments' => $expandedAssignments,
         ])->layout('layouts.app', ['title' => 'Input Nilai']);
     }
 }

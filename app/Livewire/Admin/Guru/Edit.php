@@ -2,31 +2,45 @@
 
 namespace App\Livewire\Admin\Guru;
 
-use Livewire\Component;
 use App\Models\GuruRapor;
 use App\Models\User;
+use Livewire\Component;
 
 class Edit extends Component
 {
     public $guruId;
+
     public $nip = '';
+
     public $nama = '';
+
     public $nama_arabic = '';
+
     public $jenis_kelamin = '';
+
     public $tempat_lahir = '';
+
     public $tanggal_lahir = '';
+
     public $alamat = '';
+
     public $telepon = '';
+
     public $email = '';
+
     public $pendidikan_terakhir = '';
+
     public $tanggal_mulai_mengajar = '';
+
     public $status = 'Aktif';
+
     public $username = '';
+
     public $password = '';
 
     protected function rules()
     {
-        $guru = GuruRapor::find($this->guruId);
+        $guru = GuruRapor::where('sekolah_id', auth()->user()->sekolah_id)->find($this->guruId);
         $userId = $guru?->user_id;
 
         $rules = [
@@ -38,11 +52,11 @@ class Edit extends Component
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
             'telepon' => 'nullable|string|max:20',
-            'email' => 'required|email|max:255|unique:users,email,' . $userId,
+            'email' => 'required|email|max:255|unique:users,email,'.$userId,
             'pendidikan_terakhir' => 'nullable|string|max:255',
             'tanggal_mulai_mengajar' => 'nullable|date',
             'status' => 'required|in:Aktif,Tidak Aktif',
-            'username' => 'required|string|max:255|unique:users,username,' . $userId,
+            'username' => 'required|string|max:255|unique:users,username,'.$userId,
             'password' => 'nullable|string|min:8',
         ];
 
@@ -64,8 +78,8 @@ class Edit extends Component
     public function mount($id)
     {
         $this->guruId = $id;
-        $guru = GuruRapor::with('user')->findOrFail($id);
-        
+        $guru = GuruRapor::where('sekolah_id', auth()->user()->sekolah_id)->with('user')->findOrFail($id);
+
         $this->nip = $guru->nip;
         $this->nama = $guru->nama;
         $this->nama_arabic = $guru->nama_arabic;
@@ -78,7 +92,7 @@ class Edit extends Component
         $this->pendidikan_terakhir = $guru->pendidikan_terakhir;
         $this->tanggal_mulai_mengajar = $guru->tanggal_mulai_mengajar ? $guru->tanggal_mulai_mengajar->format('Y-m-d') : '';
         $this->status = $guru->status;
-        
+
         // Load username from user if exists
         if ($guru->user) {
             $this->username = $guru->user->username;
@@ -90,7 +104,7 @@ class Edit extends Component
     {
         $this->validate();
 
-        $guru = GuruRapor::findOrFail($this->guruId);
+        $guru = GuruRapor::where('sekolah_id', auth()->user()->sekolah_id)->findOrFail($this->guruId);
         $guru->update([
             'nip' => $this->nip,
             'nama' => $this->nama,
@@ -114,12 +128,12 @@ class Edit extends Component
                 'username' => $this->username,
                 'email' => $this->email,
             ];
-            
+
             // Only update password if provided
             if ($this->password) {
                 $updateData['password'] = bcrypt($this->password);
             }
-            
+
             User::where('id', $guru->user_id)->update($updateData);
         } else {
             // Create new user if doesn't exist
@@ -131,7 +145,7 @@ class Edit extends Component
                 'role' => 'guru',
                 'sekolah_id' => auth()->user()->sekolah_id,
             ]);
-            
+
             $guru->update(['user_id' => $user->id]);
         }
 

@@ -2,7 +2,7 @@
     @if(auth()->user()->isAdmin())
         <!-- Admin Dashboard -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Dashboard Admin</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Dashboard {{ auth()->user()->roleLabel() }}</h1>
             <p class="text-gray-600">Selamat datang, {{ auth()->user()->name }}</p>
         </div>
 

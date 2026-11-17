@@ -1,5 +1,7 @@
 # Laravel
 .env
+.env.*
+!.env.example
 /vendor
 /node_modules
 /public/hot
@@ -7,6 +9,9 @@
 composer.phar
 
 # Storage (jangan hapus foldernya, hanya isinya)
+/storage/app/private/
+/storage/app/public/
+/storage/app/mpdf/
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*

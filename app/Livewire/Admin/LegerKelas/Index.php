@@ -2,24 +2,30 @@
 
 namespace App\Livewire\Admin\LegerKelas;
 
-use Livewire\Component;
-use App\Models\KelasRapor;
-use App\Models\Semester;
-use App\Models\MataPelajaran;
-use App\Models\Nilai;
 use App\Exports\LegerKelasExport;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Models\KelasRapor;
+use App\Models\Nilai;
+use App\Models\Semester;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
     public $kelasId;
+
     public $semesterId;
+
     public $kelas;
+
     public $semester;
+
     public $mataPelajarans = [];
+
     public $legerData = [];
+
     public $averages = [];
+
     public $rankings = [];
 
     public function mount()
@@ -31,21 +37,23 @@ class Index extends Component
 
     public function loadLegerData()
     {
-        if (!$this->kelasId || !$this->semesterId) {
+        if (! $this->kelasId || ! $this->semesterId) {
             $this->legerData = [];
             $this->mataPelajarans = [];
             $this->averages = [];
             $this->rankings = [];
+
             return;
         }
 
-        $this->kelas = KelasRapor::with('tahunAjaran')->find($this->kelasId);
+        $this->kelas = KelasRapor::with('tahunAjaran')->findOrFail($this->kelasId);
 
-        if (!$this->kelas) {
+        if (! $this->kelas) {
             $this->legerData = [];
             $this->mataPelajarans = [];
             $this->averages = [];
             $this->rankings = [];
+
             return;
         }
 
@@ -57,6 +65,8 @@ class Index extends Component
         $this->mataPelajarans = DB::table('guru_mata_pelajaran')
             ->join('mata_pelajarans', 'guru_mata_pelajaran.mata_pelajaran_id', '=', 'mata_pelajarans.id')
             ->where('guru_mata_pelajaran.tingkat', $this->kelas->tingkat)
+            ->where('guru_mata_pelajaran.kategori', $this->kelas->kategori)
+            ->where('mata_pelajarans.sekolah_id', $this->kelas->tahunAjaran->sekolah_id)
             ->select('mata_pelajarans.*')
             ->distinct()
             ->orderBy('mata_pelajarans.nama')
@@ -93,7 +103,7 @@ class Index extends Component
             foreach ($this->mataPelajarans as $mapel) {
                 $nilai = $nilais->get($siswa->id)?->firstWhere('mata_pelajaran_id', $mapel->id);
                 $nilaiPengetahuan = $nilai->nilai_pengetahuan ?? null;
-                
+
                 $siswaData['grades'][$mapel->id] = $nilaiPengetahuan;
 
                 // Calculate average (only count non-empty grades)
@@ -129,6 +139,7 @@ class Index extends Component
             if ($average == 0) {
                 // Students with 0 average don't get ranked
                 $this->rankings[$siswaId] = '-';
+
                 continue;
             }
 
@@ -162,14 +173,18 @@ class Index extends Component
 
     public function export()
     {
-        if (!$this->kelasId || !$this->semesterId) {
+        if (! $this->kelasId || ! $this->semesterId) {
             session()->flash('error', 'Silakan pilih kelas dan semester terlebih dahulu.');
+
             return;
         }
 
-        $fileName = 'Leger_Kelas_' . str_replace(' ', '_', $this->kelas->nama) . '_' . 
-                    str_replace('/', '-', $this->semester->nama) . '_' . 
-                    date('Y-m-d') . '.xlsx';
+        $this->loadLegerData();
+        $this->semester = Semester::findOrFail($this->semesterId);
+
+        $fileName = 'Leger_Kelas_'.str_replace(' ', '_', $this->kelas->nama).'_'.
+                    str_replace('/', '-', $this->semester->nama).'_'.
+                    date('Y-m-d').'.xlsx';
 
         return Excel::download(
             new LegerKelasExport(
@@ -189,7 +204,7 @@ class Index extends Component
 
         return view('livewire.admin.leger-kelas.index', [
             'kelasList' => $kelasList,
-            'semesters' => $semesters
+            'semesters' => $semesters,
         ])->layout('layouts.app', ['title' => 'Leger Kelas']);
     }
 }

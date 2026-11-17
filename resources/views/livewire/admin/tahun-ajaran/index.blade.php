@@ -5,12 +5,14 @@
             <h1 class="text-2xl font-bold text-gray-800">Kelola Tahun Ajaran</h1>
             <p class="text-gray-600 mt-1">Manajemen tahun ajaran dan semester</p>
         </div>
+        @if(auth()->user()->isSuperAdmin())
         <a href="{{ route('admin.tahun-ajaran.create') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
             Tambah Tahun Ajaran
         </a>
+        @endif
     </div>
 
     <!-- Flash Message -->
@@ -50,7 +52,7 @@
                             <div class="text-sm text-gray-500">
                                 @foreach($tahunAjaran->semesters as $semester)
                                     <button 
-                                        wire:click="toggleSemester({{ $semester->id }})"
+                                        @disabled(!auth()->user()->isSuperAdmin()) wire:click="toggleSemester({{ $semester->id }})"
                                         class="inline-flex items-center px-2 py-1 rounded text-xs font-medium {{ $semester->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' }} mr-1 transition cursor-pointer"
                                         title="Klik untuk {{ $semester->is_active ? 'menonaktifkan' : 'mengaktifkan' }} semester">
                                         {{ $semester->nama }}
@@ -64,18 +66,20 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <button wire:click="toggleActive({{ $tahunAjaran->id }})" 
+                            <button @disabled(!auth()->user()->isSuperAdmin()) wire:click="toggleActive({{ $tahunAjaran->id }})"
                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $tahunAjaran->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                 {{ $tahunAjaran->is_active ? 'Aktif' : 'Nonaktif' }}
                             </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            @if(auth()->user()->isSuperAdmin())
                             <a href="{{ route('admin.tahun-ajaran.edit', $tahunAjaran->id) }}" wire:navigate class="text-blue-600 hover:text-blue-900 mr-3">
                                 Edit
                             </a>
                             <button wire:click="confirmDelete({{ $tahunAjaran->id }})" class="text-red-600 hover:text-red-900">
                                 Hapus
                             </button>
+                            @endif
                         </td>
                     </tr>
                 @empty

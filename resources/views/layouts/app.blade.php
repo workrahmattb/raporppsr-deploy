@@ -45,7 +45,7 @@
                 @if(auth()->user()->isAdmin())
                     <!-- Admin Menu -->
                     <div class="px-4 mb-4">
-                        <p class="text-xs font-semibold text-blue-300 uppercase tracking-wider">Admin</p>
+                        <p class="text-xs font-semibold text-blue-300 uppercase tracking-wider">{{ auth()->user()->roleLabel() }}</p>
                     </div>
                     <a href="{{ route('dashboard') }}" wire:navigate @click="mobileMenuOpen = false" class="flex items-center px-6 py-3 text-white hover:bg-blue-700 transition {{ request()->routeIs('dashboard') ? 'bg-blue-700 border-l-4 border-white' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,6 +159,9 @@
                         Leger Kelas
                     </a>
                 @endif
+                    @if(auth()->user()->isSuperAdmin())
+                        <a href="{{ route('super-admin.admins.index') }}" wire:navigate class="flex items-center px-6 py-3 text-white hover:bg-blue-700">Kelola Admin</a>
+                    @endif
             </nav>
         </aside>
 
@@ -185,7 +188,7 @@
                             <button @click="open = !open" class="flex items-center space-x-2 sm:space-x-3 focus:outline-none">
                                 <div class="text-right hidden sm:block">
                                     <p class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p>
+                                    <p class="text-xs text-gray-500">{{ auth()->user()->roleLabel() }}</p>
                                 </div>
                                 <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
                                     {{ auth()->user()->initials() }}

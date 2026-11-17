@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +23,16 @@ class TahunAjaran extends Model
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('sekolah_admin', function (Builder $query): void {
+            $user = auth()->user();
+            if ($user?->role === 'admin') {
+                $query->where('sekolah_id', $user->sekolah_id);
+            }
+        });
+    }
 
     // Relationships
     public function sekolah()

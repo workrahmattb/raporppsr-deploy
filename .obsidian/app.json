@@ -1,0 +1,16 @@
+{
+  "newFileLocation": "folder",
+  "newFileFolderPath": "docs",
+  "useMarkdownLinks": false,
+  "userIgnoreFilters": [
+    "vendor/",
+    "node_modules/",
+    "storage/",
+    "bootstrap/cache/",
+    "public/build/",
+    ".git/",
+    ".agents/",
+    ".codex/",
+    ".env"
+  ]
+}

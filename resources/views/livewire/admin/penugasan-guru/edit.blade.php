@@ -60,13 +60,13 @@
                     <label for="guru" class="block text-sm font-medium text-gray-700 mb-2">
                         Guru <span class="text-red-500">*</span>
                     </label>
-                    <select wire:model="guru_id" id="guru"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('guru_id') border-red-500 @enderror">
-                        <option value="">-- Pilih Guru --</option>
-                        @foreach($gurus as $guru)
-                            <option value="{{ $guru->id }}">{{ $guru->nama }} ({{ $guru->nip }})</option>
-                        @endforeach
-                    </select>
+                    <x-searchable-select
+                        id="guru"
+                        model="guru_id"
+                        :options="$gurus->map(fn ($guru) => ['value' => (string) $guru->id, 'label' => $guru->nama.' ('.$guru->nip.')'])->values()->all()"
+                        placeholder="-- Pilih Guru --"
+                        search-placeholder="Cari nama guru atau NIP..."
+                    />
                     @error('guru_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -77,14 +77,26 @@
                     <label for="mata_pelajaran" class="block text-sm font-medium text-gray-700 mb-2">
                         Mata Pelajaran <span class="text-red-500">*</span>
                     </label>
-                    <select wire:model="mata_pelajaran_id" id="mata_pelajaran"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('mata_pelajaran_id') border-red-500 @enderror">
-                        <option value="">-- Pilih Mata Pelajaran --</option>
-                        @foreach($mataPelajarans as $mapel)
-                            <option value="{{ $mapel->id }}">{{ $mapel->kode }} - {{ $mapel->nama }}</option>
+                    <x-searchable-select
+                        id="mata_pelajaran"
+                        model="mata_pelajaran_id"
+                        :options="$mataPelajarans->map(fn ($mapel) => ['value' => (string) $mapel->id, 'label' => $mapel->kode.' - '.$mapel->nama])->values()->all()"
+                        placeholder="-- Pilih Mata Pelajaran --"
+                        search-placeholder="Cari nama atau kode mata pelajaran..."
+                    />
+                    @error('mata_pelajaran_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="kategori" class="block text-sm font-medium text-gray-700 mb-2">Kategori Kelas <span class="text-red-500">*</span></label>
+                    <select wire:model="kategori" id="kategori" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 @error('kategori') border-red-500 @enderror">
+                        @foreach(auth()->user()->kategoriDiizinkan() as $kategoriPilihan)
+                            <option value="{{ $kategoriPilihan }}">{{ $kategoriPilihan }}</option>
                         @endforeach
                     </select>
-                    @error('mata_pelajaran_id')
+                    @error('kategori')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

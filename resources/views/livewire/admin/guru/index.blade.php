@@ -87,6 +87,9 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{{ route('admin.guru.view', $guru->id) }}" wire:navigate class="text-gray-600 hover:text-gray-900 mr-3">
+                                View
+                            </a>
                             <a href="{{ route('admin.guru.edit', $guru->id) }}" wire:navigate class="text-blue-600 hover:text-blue-900 mr-3">
                                 Edit
                             </a>

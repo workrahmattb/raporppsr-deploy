@@ -28,8 +28,8 @@ class MataPelajaran extends Model
     public function gurus()
     {
         return $this->belongsToMany(GuruRapor::class, 'guru_mata_pelajaran', 'mata_pelajaran_id', 'guru_id')
-                    ->withPivot('tingkat')
-                    ->withTimestamps();
+            ->withPivot('tingkat', 'kategori')
+            ->withTimestamps();
     }
 
     public function nilais()

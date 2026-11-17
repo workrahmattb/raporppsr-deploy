@@ -15,6 +15,7 @@ class GuruMataPelajaran extends Model
         'guru_id',
         'mata_pelajaran_id',
         'tingkat',
+        'kategori',
     ];
 
     // Relationships

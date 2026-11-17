@@ -2,15 +2,18 @@
 
 namespace App\Livewire\Admin\TahunAjaran;
 
-use Livewire\Component;
-use App\Models\TahunAjaran;
 use App\Models\Semester;
+use App\Models\TahunAjaran;
+use Livewire\Component;
 
 class Create extends Component
 {
     public $tahun = '';
+
     public $tanggal_mulai = '';
+
     public $tanggal_selesai = '';
+
     public $create_semesters = true;
 
     protected $rules = [
@@ -28,6 +31,7 @@ class Create extends Component
 
     public function save()
     {
+        abort_unless(auth()->user()?->isSuperAdmin(), 403);
         $this->validate();
 
         $tahunAjaran = TahunAjaran::create([
@@ -62,6 +66,7 @@ class Create extends Component
         }
 
         session()->flash('message', 'Tahun ajaran berhasil ditambahkan.');
+
         return redirect()->route('admin.tahun-ajaran.index');
     }
 

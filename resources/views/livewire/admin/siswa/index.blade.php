@@ -73,7 +73,7 @@
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $siswa->nama }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $siswa->nama }} · {{ $siswa->kategori }}</div>
                                     <div class="text-sm text-gray-500">{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
                                 </div>
                             </div>

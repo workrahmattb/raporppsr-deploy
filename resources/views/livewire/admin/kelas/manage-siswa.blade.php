@@ -209,7 +209,7 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">
                 KELAS
-                <span class="text-blue-600">{{ $kelas->nama }}</span>
+                <span class="text-blue-600">{{ $kelas->nama }} ({{ $kelas->kategori }})</span>
                 <span class="text-gray-500 font-normal ml-2">({{ $siswasDiKelas->total() }} siswa)</span>
             </h2>
         </div>

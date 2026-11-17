@@ -17,6 +17,15 @@
     <!-- Form -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <form wire:submit="update">
+            <div class="mb-6">
+                <label for="kategori" class="block text-sm font-medium text-gray-700 mb-2">Bagian Siswa</label>
+                <select wire:model="kategori" id="kategori" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                    @foreach(auth()->user()->kategoriDiizinkan() as $kategoriPilihan)
+                        <option value="{{ $kategoriPilihan }}">{{ $kategoriPilihan }}</option>
+                    @endforeach
+                </select>
+                @error('kategori')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+            </div>
             <!-- Data Siswa -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Data Siswa</h3>

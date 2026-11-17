@@ -15,13 +15,14 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
         $userRole = auth()->user()->role;
+        abort_if($userRole === 'admin' && auth()->user()->kategoriDiizinkan() === [], 403, 'Kategori admin belum ditentukan oleh Super Admin.');
 
-        if (!in_array($userRole, $roles)) {
+        if (! in_array($userRole, $roles)) {
             abort(403, 'Unauthorized action.');
         }
 
