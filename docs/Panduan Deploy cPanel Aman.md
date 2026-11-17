@@ -113,6 +113,14 @@ tar -czf "$BACKUP_DIR/aplikasi-sebelum-update.tar.gz" -C "$APP_DIR" .
 test -s "$BACKUP_DIR/aplikasi-sebelum-update.tar.gz"
 ```
 
+Setelah arsip file berhasil dibuat, kembalikan izin bawaan terminal sebelum Git, Composer, atau build membuat file baru:
+
+```bash
+umask 022
+```
+
+`umask 077` hanya dipakai untuk membuat backup privat. Jika dibiarkan saat mengambil kode, aset CSS/JS baru dapat berizin `600` dan tidak bisa dibaca server web. File backup yang sudah dibuat tetap memiliki izin privat.
+
 Buat backup database yang dipakai **hosting** melalui cPanel Backup/Backup Wizard atau Export SQL phpMyAdmin. Simpan hasilnya di luar direktori publik dan unduh salinannya ke komputer.
 
 Jika `mysqldump` tersedia, contoh alternatifnya:
