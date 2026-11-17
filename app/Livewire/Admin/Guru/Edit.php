@@ -57,7 +57,7 @@ class Edit extends Component
             'tanggal_mulai_mengajar' => 'nullable|date',
             'status' => 'required|in:Aktif,Tidak Aktif',
             'username' => 'required|string|max:255|unique:users,username,'.$userId,
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string|min:7',
         ];
 
         return $rules;
@@ -72,7 +72,7 @@ class Edit extends Component
         'email.unique' => 'Email sudah terdaftar di sistem',
         'username.required' => 'Username harus diisi',
         'username.unique' => 'Username sudah terdaftar',
-        'password.min' => 'Password minimal 8 karakter',
+        'password.min' => 'Password minimal 7 karakter',
     ];
 
     public function mount($id)

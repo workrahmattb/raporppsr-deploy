@@ -14,7 +14,7 @@
                 <flux:select.option value="Putra">Putra</flux:select.option>
                 <flux:select.option value="Putri">Putri</flux:select.option>
             </flux:select>
-            <flux:input wire:model="password" label="Password" type="password" autocomplete="new-password" description="Minimal 8 karakter. Saat edit, kosongkan untuk mempertahankan password." />
+            <flux:input wire:model="password" label="Password" type="password" autocomplete="new-password" description="Minimal 7 karakter. Saat edit, kosongkan untuk mempertahankan password." />
         </div>
         <div class="flex justify-end gap-3 mt-6">
             @if($adminId)<flux:button wire:click="cancel">Batal</flux:button>@endif

@@ -2,25 +2,38 @@
 
 namespace App\Livewire\Admin\Guru;
 
-use Livewire\Component;
 use App\Models\GuruRapor;
 use App\Models\User;
+use Livewire\Component;
 
 class Create extends Component
 {
     public $nip = '';
+
     public $nama = '';
+
     public $nama_arabic = '';
+
     public $jenis_kelamin = '';
+
     public $tempat_lahir = '';
+
     public $tanggal_lahir = '';
+
     public $alamat = '';
+
     public $telepon = '';
+
     public $email = '';
+
     public $pendidikan_terakhir = '';
+
     public $tanggal_mulai_mengajar = '';
+
     public $status = 'Aktif';
+
     public $username = '';
+
     public $password = '';
 
     protected function rules()
@@ -39,7 +52,7 @@ class Create extends Component
             'tanggal_mulai_mengajar' => 'nullable|date',
             'status' => 'required|in:Aktif,Tidak Aktif',
             'username' => 'required|string|max:255|unique:users,username',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:7',
         ];
     }
 
@@ -54,7 +67,7 @@ class Create extends Component
         'username.required' => 'Username harus diisi',
         'username.unique' => 'Username sudah terdaftar',
         'password.required' => 'Password harus diisi',
-        'password.min' => 'Password minimal 8 karakter',
+        'password.min' => 'Password minimal 7 karakter',
     ];
 
     public function save()

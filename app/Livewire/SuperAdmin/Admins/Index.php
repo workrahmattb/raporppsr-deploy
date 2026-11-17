@@ -60,7 +60,7 @@ class Index extends Component
             'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($admin)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($admin)],
             'kategori_admin' => ['required', Rule::in(['Putra', 'Putri'])],
-            'password' => [$admin->exists ? 'nullable' : 'required', 'string', 'min:8', Password::default()],
+            'password' => [$admin->exists ? 'nullable' : 'required', 'string', Password::default()],
         ]);
 
         $data = [
