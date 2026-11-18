@@ -34,7 +34,7 @@
             <div>
                 <label for="tahunAjaran" class="block text-sm font-medium text-gray-700 mb-2">Tahun Ajaran</label>
                 <select wire:model.live="tahunAjaranId" id="tahunAjaran" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">Semua Tahun Ajaran</option>
+                    <option value="">-- Pilih Tahun Ajaran --</option>
                     @foreach($tahunAjarans as $ta)
                         <option value="{{ $ta->id }}">{{ $ta->tahun }}</option>
                     @endforeach
@@ -55,7 +55,7 @@
             <!-- Semester Filter -->
             <div>
                 <label for="semester" class="block text-sm font-medium text-gray-700 mb-2">Semester</label>
-                <select wire:model.live="semesterId" id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <select wire:model.live="semesterId" wire:key="semester-{{ $tahunAjaranId }}" @disabled(!$tahunAjaranId) id="semester" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option value="">-- Pilih Semester --</option>
                     @foreach($semesters as $sem)
                         <option value="{{ $sem->id }}">{{ $sem->nama_lengkap }}</option>

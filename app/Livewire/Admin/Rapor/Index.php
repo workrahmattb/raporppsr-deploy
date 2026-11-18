@@ -23,16 +23,18 @@ class Index extends Component
 
     public $search = '';
 
-    public function mount()
+    public function mount(): void
     {
         // Get active semester by default
         $activeSemester = Semester::where('is_active', true)->first();
-        $this->semesterId = $activeSemester->id ?? null;
+        $this->semesterId = $activeSemester?->id;
+        $this->tahunAjaranId = $activeSemester?->tahun_ajaran_id;
     }
 
-    public function updatedTahunAjaranId()
+    public function updatedTahunAjaranId(): void
     {
-        $this->kelasId = null; // Reset kelas when tahun ajaran changes
+        $this->kelasId = null;
+        $this->semesterId = null;
         $this->resetPage();
     }
 
@@ -128,7 +130,7 @@ class Index extends Component
     public function render()
     {
         $tahunAjarans = TahunAjaran::orderBy('tanggal_mulai', 'desc')->get();
-        $semesters = Semester::orderBy('tahun_ajaran_id', 'desc')->orderBy('nama')->get();
+        $semesters = Semester::where('tahun_ajaran_id', $this->tahunAjaranId)->orderBy('nama')->get();
 
         // Get kelas based on selected tahun ajaran
         $kelas = KelasRapor::query()
