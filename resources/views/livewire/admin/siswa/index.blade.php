@@ -57,14 +57,14 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NISN/NIS</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tempat & Tanggal Lahir</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Orang Tua</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Arabic</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($siswas as $siswa)
-                    <tr class="hover:bg-gray-50">
+                    <tr wire:key="siswa-{{ $siswa->id }}" class="hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full {{ $siswa->jenis_kelamin == 'L' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600' }}">
@@ -90,9 +90,19 @@
                             <div class="text-sm text-gray-900">{{ $siswa->tempat_lahir ?? '-' }}</div>
                             <div class="text-sm text-gray-500">{{ $siswa->tanggal_lahir ? \Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</div>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">{{ $siswa->nama_ayah ?? '-' }}</div>
-                            <div class="text-sm text-gray-500">{{ $siswa->nama_ibu ?? '-' }}</div>
+                        <td class="px-6 py-4 min-w-64">
+                            <input type="text" wire:model="namaArabic.{{ $siswa->id }}" dir="rtl" lang="ar"
+                                        wire:keydown.enter.prevent="$el.blur()"
+                                        wire:blur="simpanNamaArabic({{ $siswa->id }})"
+                                        title="Tekan Enter atau keluar dari kolom untuk menyimpan"
+                                aria-label="Nama Arabic {{ $siswa->nama }}" maxlength="255"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-blue-500">
+                            @if($namaArabicSavedId === $siswa->id)
+                                <span role="status" class="ml-2 text-xs text-green-700">Tersimpan</span>
+                            @endif
+                            @error('namaArabic.'.$siswa->id)
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 

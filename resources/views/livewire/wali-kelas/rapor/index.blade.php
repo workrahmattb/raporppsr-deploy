@@ -54,6 +54,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NISN</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Siswa</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Arabic</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Catatan Wali Kelas</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -62,13 +63,27 @@
                         @foreach($siswas as $siswa)
                             <tr class="hover:bg-gray-50" wire:key="siswa-{{ $siswa->id }}">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $siswa->nomor_absen }}
+                                    {{ $siswas->firstItem() + $loop->index }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {{ $siswa->nisn }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $siswa->nama }}</div>
+                                </td>
+                                <td class="px-6 py-4 min-w-64">
+                                    <input type="text" wire:model="namaArabic.{{ $siswa->id }}" dir="rtl" lang="ar"
+                                        wire:keydown.enter.prevent="$el.blur()"
+                                        wire:blur="simpanNamaArabic({{ $siswa->id }})"
+                                        title="Tekan Enter atau keluar dari kolom untuk menyimpan"
+                                        aria-label="Nama Arabic {{ $siswa->nama }}" maxlength="255"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-green-600">
+                                    @if($namaArabicSavedId === $siswa->id)
+                                        <span role="status" class="ml-2 text-xs text-green-700">Tersimpan</span>
+                                    @endif
+                                    @error('namaArabic.'.$siswa->id)
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 relative">
                                     <textarea 
@@ -107,6 +122,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="px-6 py-4 border-t border-gray-200">
+                    {{ $siswas->links() }}
+                </div>
             </div>
         @elseif($semesterId)
             <div class="bg-white rounded-lg shadow-md p-12 text-center text-gray-500">
