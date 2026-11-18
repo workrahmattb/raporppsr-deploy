@@ -14,7 +14,7 @@
                 </svg>
                 <div>
                     <p class="font-semibold text-gray-900">{{ $kelas->nama }} - Tingkat {{ $kelas->tingkat }}</p>
-                    <p class="text-sm text-gray-600">{{ $kelas->tahunAjaran->nama ?? '' }}</p>
+                    <p class="text-sm text-gray-600">{{ $kelas->tahunAjaran->tahun ?? '' }}</p>
                 </div>
             </div>
         </div>

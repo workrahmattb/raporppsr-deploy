@@ -36,7 +36,7 @@
                 <select wire:model.live="tahunAjaranId" id="tahunAjaran" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option value="">Semua Tahun Ajaran</option>
                     @foreach($tahunAjarans as $ta)
-                        <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
+                        <option value="{{ $ta->id }}">{{ $ta->tahun }}</option>
                     @endforeach
                 </select>
             </div>
